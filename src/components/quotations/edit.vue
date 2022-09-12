@@ -14,7 +14,7 @@
                 <v-autocomplete  :rules="[v => !!v || 'Campo requerido']" v-if="permissions('assignQuotations')" clearable v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">
                     <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
                 </v-autocomplete>
-                <v-autocomplete v-else-if="quotation.user_id=currentUser.id" disabled v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">                
+                <v-autocomplete disabled v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">                
                 </v-autocomplete>
             </v-col>
         </v-card-title>
