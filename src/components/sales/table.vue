@@ -11,7 +11,7 @@
         :headers="showHeaders" 
         :items="quotations" 
         class="elevation-0 px-6 py-4"
-        group-by="promesa_de_pago" 
+        group-by="MES" 
         height="600"
         fixed-header
         :footer-props="{'items-per-page-options':[15, 30, 50, quotationsLength]}"
@@ -69,6 +69,17 @@
                         <v-icon @click="exportExcel">mdi-download</v-icon>
                     </v-btn>
                 </v-toolbar>
+                <v-row class="ma-0 pb-4 pt-2">
+                    <v-icon color="#0080002b" class="mr-1">mdi-label</v-icon> 
+                    <span style="font-size:12px; line-height:24px!important;">Ya se cobro al Cliente y se pago a Influencer</span>
+                    <v-spacer/>
+                    <v-icon color="#fff2ca" class="mr-1">mdi-label</v-icon> 
+                    <span style="font-size:12px; line-height:24px!important;">Ya se cobro al Cliente y no se ha pagado a Influencer</span>
+                    <v-spacer/>
+                    <v-icon color="#d9ebff" class="mr-1">mdi-label</v-icon> 
+                    <span style="font-size:12px; line-height:24px!important;">No se ha cobrado al cliente y ya se pago a Influencer</span>
+                    <v-spacer/>
+                </v-row>
             </template>
             <template v-slot:[`item.subtotal`]="{ item }">
                 {{(item.subtotal*1).toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}
@@ -253,9 +264,9 @@
                 Fecha Promesa: 
                 <v-menu v-model="datePicker2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px" >
                     <template v-slot:activator="{ on }">
-                        <v-text-field class="pb-6 mt-4" :rules="[v => !!v || 'Campo requerido']" clearable required v-model="quotation.promise_date" label="Fecha" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                        <v-text-field class="pb-6 mt-4" :rules="[v => !!v || 'Campo requerido']" clearable required v-model="quotation.payment_promise_date" label="Fecha" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
                     </template>
-                    <v-date-picker color="primary" v-model="quotation.promise_date" @input="datePicker2 = false"></v-date-picker>
+                    <v-date-picker color="primary" v-model="quotation.payment_promise_date" @input="datePicker2 = false"></v-date-picker>
                 </v-menu>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="promiseDateDialog=false">
@@ -401,14 +412,14 @@
             },
             showAgency(){
                 if(this.prop_agency_id == null){
-                    return { text: 'Agencia', value: 'agency',}
+                    return { text: 'Agencia', value: 'agency', sortable: false}
                 }else{
                     return false
                 }
             },
             showBrand(){
                 if(this.prop_brand_id == null){
-                    return { text: 'Marca', value: 'brand',}
+                    return { text: 'Marca', value: 'brand', sortable: false}
                 }else{
                     return false
                 }
@@ -420,12 +431,12 @@
                 return [
                 { text: 'Folio', value: 'id' },
                 { text: 'Departamento', value: 'booking' },
-                { text: 'Influencer', value: 'influencer' },
+                { text: 'Influencer', value: 'influencer', sortable: false},
                 this.showAgency,
                 this.showBrand,
                 { text: 'Campaña', value: 'campaign' },
                 //{ text: 'Contacto', value: 'contact' },
-                { text: 'Servicio(s)', value: 'services' },
+                { text: 'Servicio(s)', value: 'service' },
                 { text: 'Fecha de Servicio', value: 'service_date' },
                 { text: 'Subtotal', value: 'subtotal' },
                 { text: 'IVA', value: 'iva' },
@@ -438,11 +449,11 @@
                 { text: 'Fecha Pago Influencer', value: 'influencer_payment_date' },
                 { text: 'Factura', value: 'invoice' },
                 { text: 'Fecha Factura', value: 'invoice_date' },
-                { text: 'Promesa de Pago', value: 'promise_date' },
+                { text: 'Promesa de Pago', value: 'payment_promise_date', sortable: false },
                 { text: 'Fecha de Pago', value: 'pay_day' },
                 { text: 'Responsable', value: 'salesman' },
                 { value: 'actions', sortable: false, align: 'end', },
-                { value: 'promesa_de_pago', sortable: false, align: 'end', }
+                { value: 'MES', sortable: false, align: 'end', }
             ]},
             rejectionsLists(){
                 return this.$store.state.rejection.rejections;
@@ -531,13 +542,13 @@
                     if(this.selectedStatus!='all'){
                         link = link + 'filter[' + this.selectedStatus + ']=1&'
                     }
-                    /*if(sortBy.length === 1){
+                    if(sortBy.length === 1){
                         if(sortDesc[0]){
                             link = link + "sort=-" + sortBy[0] + '&'
                         }else{
                             link = link + "sort=" + sortBy[0] + '&'
                         }
-                    }*/
+                    }
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage).then(response => {
                         this.quotationsLength = response.data.meta.total
                         items = this.mapQuotations(response.data.data)
@@ -573,7 +584,7 @@
                         agency: this.agency(id.agency),
                         brand: this.agency(id.brand),
                         //contact: id.contact.name,
-                        services: id.service,
+                        service: id.service,
                         service_date: id.service_date,
                         subtotal: id.subtotal,
                         iva: id.iva,
@@ -585,7 +596,7 @@
                         influencer_payment_date: id.influencer_payment_date,
                         invoice: id.invoice,
                         invoice_date: id.invoice_date,
-                        promise_date: id.payment_promise_date,
+                        payment_promise_date: id.payment_promise_date,
                         pay_day: id.pay_day,
                         salesman: id.agent.name + ' ' + id.agent.last,
                         promesa_de_pago: this.cualFecha(id.payment_promise_date, id.created_at.slice(0, 10)),
@@ -604,7 +615,7 @@
                         influencer: id.influencer,
                         agency: id.agency,
                         brand: id.brand,
-                        services: id.services,
+                        service: id.service,
                         service_date: id.service_date,
                         subtotal: id.subtotal,
                         iva: id.iva,
@@ -616,11 +627,11 @@
                         influencer_payment_date: id.influencer_payment_date,
                         invoice: id.invoice,
                         invoice_date: id.invoice_date,
-                        promise_date: id.promise_date,
+                        payment_promise_date: id.payment_promise_date,
                         pay_day: id.pay_day,
                         salesman: id.salesman,
                         editedItem: id.editedItem,
-                        promesa_de_pago: this.promesadepago(id.promesa_de_pago),
+                        MES: this.promesadepago(id.promesa_de_pago),
                         campaign:id.campaign,
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,
@@ -630,10 +641,10 @@
                 })
                 return quotations
             },
-            cualFecha(promise_date, created_at){
+            cualFecha(payment_promise_date, created_at){
                 
-                if(promise_date!=null){
-                    return new Date(promise_date)
+                if(payment_promise_date!=null){
+                    return new Date(payment_promise_date)
                 }else{
                     return new Date(created_at)
                 }
@@ -671,13 +682,13 @@
             itemRowBackground: function (item) {
                 if(item.pay_day!=null){
                     if(item.influencer_payment_date!=null){
-                        return 'style-3'
+                        return 'style-3'//verde
                     }else{
-                        return 'style-1'
+                        return 'style-1'//amarillo
                     }
                 }
                 else if(item.influencer_payment_date!=null){
-                    return 'style-2'
+                    return 'style-2'//celeste
                 }
             },
             booking(id){
@@ -709,7 +720,7 @@
             savePromiseDate(){
                 var editedItem = {
                     id:this.quotation.id,
-                    payment_promise_date:this.quotation.promise_date
+                    payment_promise_date:this.quotation.payment_promise_date
                 }
                 axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales/" + editedItem.id, editedItem).then(response=>{
                     this.promiseDateDialog = false

@@ -105,12 +105,20 @@
                 Guardar
             </v-btn>
         </v-card-actions>
+        <v-snackbar :color="snackbar.color" v-model="snackbar.show" style="text-align:center;">
+            <strong>{{ snackbar.message }}</strong>
+        </v-snackbar>
     </v-card>
 </template>
 
 <script>
 const initialState = () => {
     return {
+        snackbar: {
+            show: false,
+            message: null,
+            color: null
+        },
         company:{
             name:'',
             phone:'',
@@ -143,10 +151,10 @@ const initialState = () => {
 }
 import axios from "axios";
     export default {
-        props:{
-            editedCompany:Object
-        },
-        data: () => ( initialState() ),
+    props:{
+        editedCompany:Object
+    },
+    data: () => ( initialState() ),
     computed: {
         agencyLists(){
             return this.entriesAgencies.map(id => {
@@ -240,11 +248,9 @@ import axios from "axios";
                 this.company.rfc = this.editedCompany.rfc
                 this.company.fiscal_address = this.editedCompany.fiscal_address
                 this.company.agenciesId = this.editedCompany.agenciesId
-                if(this.editedCompany.agenciesId!=''){
-                    this.client_type = 'brand'
-                }else{
-                    this.client_type = 'agency'
-                }
+                
+                this.client_type = this.editedCompany.label
+                
                 if(this.entriesAgencies!=undefined && this.entriesAgencies.length>0){
                     this.entriesAgencies.concat(this.editedCompany.agencies)
                 }else{
@@ -332,10 +338,34 @@ import axios from "axios";
                 if(this.client_type == 'brand'){
                     axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/brands/" + this.editedCompany.id,Object.assign(this.company)).then(response=>{
                         this.close()
+                        this.snackbar = {
+                            message: 'Marca editada con éxito!',
+                            color: 'successful',
+                            show: true
+                        }
+                    }).catch(error => {
+                        this.gris = false
+                        this.snackbar = {
+                            message: error.response.data.message,
+                            color: 'error',
+                            show: true
+                        }
                     })
                 }else if(this.client_type == 'agency'){
                     axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/agencies/" + this.editedCompany.id,Object.assign(this.company)).then(response=>{
                         this.close()
+                        this.snackbar = {
+                            message: 'Agencia editada con éxito!',
+                            color: 'successful',
+                            show: true
+                        }
+                    }).catch(error => {
+                        this.gris = false
+                        this.snackbar = {
+                            message: error.response.data.message,
+                            color: 'error',
+                            show: true
+                        }
                     })
                 }
             })

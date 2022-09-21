@@ -310,6 +310,7 @@ export default {
         editItem(item){
             this.company = [item].map(id=>{
                 return{
+                    id:id.id,
                     name:id.name,
                     phone:id.phone,
                     email:id.email,
@@ -323,7 +324,8 @@ export default {
                     rfc:id.rfc,
                     fiscal_address:id.fiscal_address,
                     agenciesId:this.perro(id.agencies),
-                    agencies:id.agencies
+                    agencies:id.agencies,
+                    label:'brand'
                 }
             })[0]
             this.editDialog = true

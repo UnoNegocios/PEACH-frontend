@@ -206,6 +206,9 @@
           </template>
           <createCompany @closeCreateDialogCompany="closeCreateDialogCompany"/>
         </v-dialog>
+        <v-snackbar :color="snackbar.color" v-model="snackbar.show" style="text-align:center;">
+            <strong>{{ snackbar.message }}</strong>
+        </v-snackbar>
     </v-card>
 </template>
 
@@ -225,6 +228,11 @@ import axios from "axios";
             'createCompany':CreateCompany,
         },   
         data: () => ({
+            snackbar: {
+                show: false,
+                message: null,
+                color: null
+            },
             createService:{
                 name:'',
             },
@@ -477,11 +485,18 @@ import axios from "axios";
                 this.$nextTick(() => {
                     this.close()
                 })
-                /*
-                for(var i=0; i<this.detail.length; i++){
-                    axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/inventory/create",Object.assign(this.detail[i]))
+                this.snackbar = {
+                    message: 'Venta creada con éxito!',
+                    color: 'successful',
+                    show: true
                 }
-                */
+            }).catch(error => {
+                this.gris2 = false
+                this.snackbar = {
+                    message: error.response.data.message,
+                    color: 'error',
+                    show: true
+                }
             })
         },
         closeCreateDialogContact: function(params) {

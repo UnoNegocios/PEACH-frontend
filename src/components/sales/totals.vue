@@ -49,6 +49,9 @@
                 <br/><span style="font-size:12px; color:grey;">Promedio:<strong>{{(totals.inlfuencer_payments_avg*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}</strong></span>
             </v-card>
         </v-col>
+                
+
+
         <!--v-col md="2" sm="6" class="px-2">
             <v-card class="py-2 px-4 elevation-0">
                 <v-icon x-small color="#ea4435" class="mr-1">mdi-circle</v-icon> 
@@ -153,5 +156,11 @@ export default {
     height: 25px!important;
     margin-bottom: -17px;
     width: 90px!important;
+}
+.hover-size{
+    height:72px;
+}
+.hover-size:hover{
+    height:168px;
 }
 </style>

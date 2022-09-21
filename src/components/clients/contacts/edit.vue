@@ -52,7 +52,9 @@
                 Guardar
             </v-btn>
         </v-card-actions>
-
+        <v-snackbar :color="snackbar.color" v-model="snackbar.show" style="text-align:center;">
+            <strong>{{ snackbar.message }}</strong>
+        </v-snackbar>
     </v-card>
 </template>
 
@@ -63,6 +65,11 @@ import axios from "axios";
             contact:Object
         },
         data: () => ({
+            snackbar: {
+                show: false,
+                message: null,
+                color: null
+            },
             gris:false,
             rules: {
                 required: value => !!value || 'Campo requerido',
@@ -90,6 +97,18 @@ import axios from "axios";
             this.$nextTick(() => {
                 axios.put(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/contact/update",Object.assign(this.contact)).then(response=>{
                     this.close()
+                    this.snackbar = {
+                        message: 'Contacto editado con éxito!',
+                        color: 'successful',
+                        show: true
+                    }
+                }).catch(error => {
+                    this.gris = false
+                    this.snackbar = {
+                        message: error.response.data.message,
+                        color: 'error',
+                        show: true
+                    }
                 })
             })
         },

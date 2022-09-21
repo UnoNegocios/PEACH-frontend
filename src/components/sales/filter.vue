@@ -23,7 +23,9 @@
 
             <v-autocomplete v-model="quotation.user_id" :items="userList" hide-no-data item-value="id" item-text="name" label="Responsable(s)" placeholder="Escribe para buscar" attach chips multiple></v-autocomplete>
 
-            <v-select label="Departamento" v-model="quotation.area" :items="areas"></v-select>
+            <!--v-select label="Departamento" v-model="quotation.area" :items="areas"></v-select>
+
+            <v-select label="Color" v-model="quotation.color" :items="colors"></v-select-->
 
             <v-text-field label="Servicio" v-model="quotation.service"></v-text-field>
 
@@ -70,6 +72,7 @@ import axios from "axios"
 export default {
     data: () => ({
         areas:['Mgmt', 'Booking'],
+        colors:['Verde', 'Amarillo', 'Celeste'],
         quotation:{
             id:'',
             area:'',
@@ -95,18 +98,24 @@ export default {
     }),
     watch: {
         searchInfluencers(val){
-            //if (this.influencerLists.length > 0) return
-            if (this.isLoadingInfluencers) return
-            this.isLoadingInfluencers = true
-            axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/influencer/search?filter[social_networks]='+val)
-            .then(res => {
-                if(this.entries.influencers.length>0){
-                    this.entries.influencers.concat(res.data.data)
-                }else{
-                    this.entries.influencers = res.data.data
-                }
-            }).finally(() => (this.isLoadingInfluencers = false))
-        },
+                if(val!=null){
+                    var link = ''
+                    if(this.currentUser.role == 'Talent Agent' || this.currentUser.role == 'Booking'){
+                        link = '&filter[parent_id]=' + this.currentUser.id
+                    }
+                    //if (this.influencerLists.length > 0) return
+                    if (this.isLoadingInfluencers) return
+                    this.isLoadingInfluencers = true
+                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/influencer/search?filter[social_networks]='+val+link)
+                    .then(res => {
+                        if(this.entries.influencers.length>0){
+                            this.entries.influencers = res.data.data
+                        }else{
+                            this.entries.influencers = res.data.data
+                        }
+                    }).finally(() => (this.isLoadingInfluencers = false))
+                }   
+            },
         searchAgencies(val){
             //if (this.agencyLists.length > 0) return
             if (this.isLoadingAgencies) return
@@ -140,6 +149,9 @@ export default {
         },
     },
     computed:{
+        currentUser(){
+                return this.$store.state.currentUser.user;
+            },
         userList(){
             return this.$store.state.user.salesman.map(id => {
                 return{
@@ -202,7 +214,8 @@ export default {
                 invoice_date:[],
                 promise_date:[],
                 pay_date:[],
-                user_id:''
+                user_id:'',
+                color:''
             }
             this.$nextTick(() => {
                 this.$emit("filtersQuotation", this.quotation);
@@ -288,7 +301,12 @@ export default {
             //select
             if(this.quotation.area!==''){
                 count = count+1
-                filter = filter + '&filter[status]='+this.quotation.area
+                filter = filter + '&filter[area]='+this.quotation.area
+            }
+            //select
+            if(this.quotation.color!==''){
+                count = count+1
+                filter = filter + '&filter[color]='+this.quotation.color
             }
             //date
             if(this.quotation.influencer_payment_date.length==2){
