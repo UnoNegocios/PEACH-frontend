@@ -387,7 +387,7 @@
                     }
                 }
                 else if(item.influencer_payment_date!=null){
-                    return 'style-2'
+                    return 'style-3'
                 }
             },
             booking(id){
