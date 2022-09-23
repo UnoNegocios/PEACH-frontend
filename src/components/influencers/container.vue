@@ -143,6 +143,10 @@ export default {
                 }
                 if(this.currentUser.role == 'Talent Agent' || this.currentUser.role == 'Booking'){
                     link = link + '&filter[parent_id]=' + this.currentUser.id + '&'
+                }else if(this.currentUser.role == 'Talent Agent Manager'){
+                    link = link + '&filter[is_booking]=' + 0 + '&'
+                }else if(this.currentUser.role == 'Booking Manager'){
+                    link = link + '&filter[is_booking]=' + 1 + '&'
                 }
                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/influencers?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage).then(response => {
                     this.companiesLength = response.data.meta.total

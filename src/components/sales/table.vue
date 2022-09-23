@@ -77,7 +77,7 @@
                     <span style="font-size:12px; line-height:24px!important;">Ya se cobro al Cliente y no se ha pagado a Influencer</span>
                     <v-spacer/>
                     <v-icon color="#d9ebff" class="mr-1">mdi-label</v-icon> 
-                    <span style="font-size:12px; line-height:24px!important;">No se ha cobrado al cliente y ya se pago a Influencer</span>
+                    <span style="font-size:12px; line-height:24px!important;">No se ha cobrado al Cliente y ya se pago a Influencer</span>
                     <v-spacer/>
                 </v-row>
             </template>
