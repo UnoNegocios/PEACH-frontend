@@ -23,9 +23,9 @@
 
             <v-autocomplete v-model="quotation.user_id" :items="userList" hide-no-data item-value="id" item-text="name" label="Responsable(s)" placeholder="Escribe para buscar" attach chips multiple></v-autocomplete>
 
-            <!--v-select label="Departamento" v-model="quotation.area" :items="areas"></v-select>
+            <v-select label="Departamento" v-model="quotation.area" item-value="value" item-text="text" :items="areas"></v-select>
 
-            <v-select label="Color" v-model="quotation.color" :items="colors"></v-select-->
+            <!--v-select label="Color" v-model="quotation.color" :items="colors"></v-select-->
 
             <v-text-field label="Servicio" v-model="quotation.service"></v-text-field>
 
@@ -71,7 +71,7 @@
 import axios from "axios"
 export default {
     data: () => ({
-        areas:['Mgmt', 'Booking'],
+        areas:[{text:'Mgmt', value:false}, {text:'Booking', value:true}],
         colors:['Verde', 'Amarillo', 'Celeste'],
         quotation:{
             id:'',
@@ -301,13 +301,14 @@ export default {
             //select
             if(this.quotation.area!==''){
                 count = count+1
-                filter = filter + '&filter[area]='+this.quotation.area
+                filter = filter + '&filter[influencer.is_booking]='+this.quotation.area
             }
-            //select
+            /*
             if(this.quotation.color!==''){
                 count = count+1
-                filter = filter + '&filter[color]='+this.quotation.color
+                filter = filter + '&filter[]='+this.quotation.color
             }
+            */
             //date
             if(this.quotation.influencer_payment_date.length==2){
                 count = count+1

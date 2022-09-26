@@ -11,10 +11,10 @@
                 </v-radio-group>
             </v-col>
             <v-col cols="12" sm="6" md="3">
-                <v-autocomplete  :rules="[v => !!v || 'Campo requerido']" v-if="permissions('assignQuotations')" clearable v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">
+                <v-autocomplete  :rules="[v => !!v || 'Campo requerido']" v-if="permissions('assignSales')" clearable v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">
                     <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
                 </v-autocomplete>
-                <v-autocomplete disabled v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">                
+                <v-autocomplete v-else disabled v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">                
                 </v-autocomplete>
             </v-col>
         </v-card-title>
@@ -72,7 +72,7 @@
                 <v-row class="mt-0 px-6">
                     <v-col cols="12" sm="6" md="6" class="mt-0 pt-0">
                         <v-container fluid>
-                            <v-textarea v-model="quotation.note" label="Descripcion"></v-textarea>
+                            <v-textarea v-model="quotation.description" label="Descripcion"></v-textarea>
                         </v-container>
                     </v-col>
                     <v-col cols="12" sm="6" md="4" class="mt-0 pt-0">
@@ -171,7 +171,7 @@ import axios from "axios";
                 agency_id:this.editedQuotation.agency_id,
                 user_id:this.editedQuotation.user_id,
                 pdf:this.editedQuotation.pdf,
-                note:this.editedQuotation.note,
+                description:this.editedQuotation.description,
                 sale_status:this.editedQuotation.sale_status,
                 sale_type:this.editedQuotation.sale_type,
                 invoice:this.editedQuotation.invoice,
@@ -222,7 +222,7 @@ import axios from "axios";
                         agency_id:this.editedQuotation.agency_id,
                         user_id:this.editedQuotation.user_id,
                         pdf:this.editedQuotation.pdf,
-                        note:this.editedQuotation.note,
+                        description:this.editedQuotation.description,
                         sale_status:this.editedQuotation.sale_status,
                         sale_type:this.editedQuotation.sale_type,
                         invoice:this.editedQuotation.invoice,

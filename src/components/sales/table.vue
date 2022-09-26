@@ -890,7 +890,7 @@
                         brand_id:this.haveAgency(id.brand),
                         user_id:this.haveAgency(id.agent),
                         pdf:id.pdf,
-                        note:id.note,
+                        description:id.description,
                         sale_type:id.sale_type,
                         invoice:id.invoice,
                         influencer_id:this.haveAgency(id.influencer),
