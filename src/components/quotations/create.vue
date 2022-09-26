@@ -375,6 +375,9 @@ import axios from "axios";
                 }
                 this.quotation.created_by_user_id = this.currentUser.id
                 this.quotation.last_updated_by_user_id = this.currentUser.id
+                if(this.quotation.user_id==''||this.quotation.user_id==undefined||this.quotation.user_id==null){
+                    this.quotation.user_id = this.currentUser.id
+                }
                 /*
                 for(var i=0; i<this.detail; i++){
                     this.detail[i].booking = this.$store.state.user.users.filter(user=>user.id == this.detail[i].influencer_id).map(user=>user.booking)[0]
