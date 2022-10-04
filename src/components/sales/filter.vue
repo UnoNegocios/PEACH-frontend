@@ -25,7 +25,7 @@
 
             <v-select label="Departamento" v-model="quotation.area" item-value="value" item-text="text" :items="areas"></v-select>
 
-            <!--v-select label="Color" v-model="quotation.color" :items="colors"></v-select-->
+            <v-select label="Color" v-model="quotation.color" :items="colors"></v-select>
 
             <v-text-field label="Servicio" v-model="quotation.service"></v-text-field>
 
@@ -303,12 +303,10 @@ export default {
                 count = count+1
                 filter = filter + '&filter[influencer.is_booking]='+this.quotation.area
             }
-            /*
             if(this.quotation.color!==''){
                 count = count+1
-                filter = filter + '&filter[]='+this.quotation.color
+                filter = filter + '&filter[color]='+this.quotation.color
             }
-            */
             //date
             if(this.quotation.influencer_payment_date.length==2){
                 count = count+1
