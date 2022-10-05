@@ -181,7 +181,7 @@ import axios from "axios";
             return this.$store.state.contact_mode.contact_modes;
         },
         usersLists(){
-            return this.$store.state.user.users;
+            return this.$store.state.user.salesman;
         },
         originLists(){
             return this.$store.state.origin.origins;

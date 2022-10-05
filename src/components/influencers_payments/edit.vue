@@ -179,7 +179,7 @@
                 }
             },
             usersLists(){
-                return this.$store.state.user.users;
+                return this.$store.state.user.salesman;
             }, 
             companyLists(){
                 return this.$store.state.company.companies//.filter(company=>this.due(company.id) == true)

@@ -101,7 +101,7 @@ import axios from "axios"
             })
         },
         usersLists(){
-            return this.$store.state.user.users;
+            return this.$store.state.user.salesman;
         },
         originLists(){
             return this.$store.state.origin.origins;

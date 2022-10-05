@@ -83,6 +83,12 @@
                             </template>
                             <v-date-picker color="primary" v-model="quotation.invoice_date" @input="datePicker = false"></v-date-picker>
                         </v-menu>
+                        <v-menu v-model="datePicker2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px" >
+                            <template v-slot:activator="{ on }">
+                                <v-text-field :rules="[v => !!v || 'Campo requerido']" required v-model="quotation.payment_promise_date" label="Fecha Promesa de Pago" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker color="primary" v-model="quotation.payment_promise_date" @input="datePicker = false"></v-date-picker>
+                        </v-menu>
                     </v-col>
                 </v-row>
             </v-container>
@@ -133,6 +139,7 @@ const initialState = () => {
         company:'',
         status:'',
         datePicker:'',
+        datePicker2:false,
         dropzoneOptions: {
             url: process.env.VUE_APP_BACKEND_ROUTE + "api/v1/quotation/files",
             addRemoveLinks: true,
@@ -309,7 +316,7 @@ import axios from "axios";
                 return this.quotation.total
             },
             gris(){
-                if(this.quotation.influencer_id==''||(this.quotation.brand_id==null&&this.quotation.agency_id==null)){
+                if(this.quotation.influencer_id==''||(this.quotation.brand_id==null&&this.quotation.agency_id==null)||this.quotation.payment_promise_date==''){
                     return true
                 }else{
                     return false

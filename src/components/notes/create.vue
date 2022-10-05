@@ -100,7 +100,7 @@ import CreateCompany from "../clients/companies/create"
             return this.$store.state.contact.contacts;
         }, 
         usersLists(){
-            return this.$store.state.user.users;
+            return this.$store.state.user.salesman;
         }, 
         currentUser:{
             get(){

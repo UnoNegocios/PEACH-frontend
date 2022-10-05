@@ -308,7 +308,7 @@ import axios from "axios";
             }
         }, 
         usersLists(){
-            return this.$store.state.user.users;
+            return this.$store.state.user.salesman;
         }, 
         influencerLists(){
             return this.$store.state.user.users.filter(user=>user.job_position == 'Influencer');
