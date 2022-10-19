@@ -902,7 +902,8 @@
                         influencer:id.influencer,
                         influencer_amount:id.influencer_amount,
                         campaign:id.campaign,
-                        invoice_date:id.invoice_date
+                        invoice_date:id.invoice_date,
+                        payment_promise_date:id.payment_promise_date
                     }
                 })[0]
                 this.editDialog = true

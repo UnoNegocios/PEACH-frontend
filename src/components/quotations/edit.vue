@@ -190,7 +190,8 @@ import axios from "axios";
                 total:this.editedQuotation.total*1,
                 influencer_amount:this.editedQuotation.influencer_amount*1,
                 campaign:this.editedQuotation.campaign,
-                invoice_date:this.editedQuotation.invoice_date
+                invoice_date:this.editedQuotation.invoice_date,
+                payment_promise_date:this.editedQuotation.payment_promise_date
             }
         },
         components: {
@@ -241,7 +242,8 @@ import axios from "axios";
                         total:this.editedQuotation.total*1,
                         influencer_amount:this.editedQuotation.influencer_amount*1,
                         campaign:this.editedQuotation.campaign,
-                        invoice_date:this.editedQuotation.invoice_date
+                        invoice_date:this.editedQuotation.invoice_date,
+                        payment_promise_date:this.editedQuotation.payment_promise_date
                     }
                 }, deep:true,
             },
