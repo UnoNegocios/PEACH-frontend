@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import FilterSellers from "../reports/filter"
+import FilterSellers from "../old/filter"
 export default {
     components: {
         'FilterSellers':FilterSellers,

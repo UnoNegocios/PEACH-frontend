@@ -2,8 +2,8 @@
         <div style="background:white;">
             <!-- Header -->
             <v-toolbar class="px-6 py-4 mb-6" flat >
-                <v-toolbar-title class="hidden-md-and-down">Ventas por Procedencia vs Mes Pasado</v-toolbar-title>
-                <v-toolbar-title class="hidden-md-and-up">Procedencias Mes</v-toolbar-title>
+                <v-toolbar-title class="hidden-md-and-down">Ventas y Cotizaciones por Procedencia</v-toolbar-title>
+                <v-toolbar-title class="hidden-md-and-up">Procedencias VyC</v-toolbar-title>
                 <v-btn icon>
                     <v-icon @click.stop="filters2 = !filters2">mdi-filter</v-icon>
                 </v-btn>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import FilterSellers from "../reports/filter"
+import FilterSellers from "../old/filter"
 export default {
     components: {
         'FilterSellers':FilterSellers,
@@ -56,15 +56,12 @@ export default {
             }
         }
     },
-    created () {
-        this.startDateFrom = new Date().getFullYear() + '/' + (new Date().getMonth()+1) + '/1'; //igual mayor que
-        this.startDateTo = new Date().getFullYear() + '/' + (new Date().getMonth() + 2) + '/1'; //menor que
-        this.startDateFromHistory = new Date().getFullYear() + '/' + (new Date().getMonth()) + '/1'
-        this.startDateToHistory = new Date().getFullYear() + '/' + (new Date().getMonth()+1) + '/1'
-
+    mounted () {
+        var date = new Date();
+        this.startDateFrom = date.getFullYear() + '/' + (date.getMonth()+1) + '/1'; //igual mayor que
+        this.startDateTo = date.getFullYear() + '/' + (date.getMonth() + 2) + '/1'; //menor que
         this.quotations = this.$store.state.quotation.sales.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFrom)).filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateTo))
-        this.quotations2 = this.$store.state.quotation.sales.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFromHistory)).filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateToHistory))
-       
+        this.quotations2 = this.$store.state.quotation.all.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFrom)).filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateTo))
         this.optionsOrigins.originSeries = [this.ventasXvendedor, this.ventasXvendedor2]
         this.render()
     },
@@ -100,7 +97,7 @@ export default {
                 }
             })
             var resultado = {
-                name: 'Actual',
+                name: 'Ventas',
                 data: perro,
                 //type: 'bar'
             }
@@ -137,7 +134,7 @@ export default {
                 }
             })
             var resultado = {
-                name: 'Mes Pasado',
+                name: 'Cotizaciones',
                 data: perro,
                 //type: 'bar'
             }
@@ -154,8 +151,7 @@ export default {
    methods:{
         /* Filtrar grafica de Ventas */
         filtersQuotation: function(params) {
-            var filterQuotationHistory = ''
-            var filterQuotation = this.$store.state.quotation.sales
+            var filterQuotation = this.$store.state.quotation.all
             if(params.company_id!=''&&params.company_id!=undefined&&params.company_id!=null){
                 var uno = filterQuotation.filter(quotation=>quotation.company_id == params.company_id[0])
                 for(var i=1; i<params.company_id.length; i++){
@@ -208,8 +204,8 @@ export default {
 
 
             
-            this.quotations = filterQuotation
-            this.quotationsPast = filterQuotationHistory
+            this.quotations = filterQuotation.filter(quotation=>quotation.status == 'vendido')
+            this.quotations2 = filterQuotation.filter(quotation=>quotation.status == 'quotation')
             this.render()
         },
         /* Nombre de vendedor */

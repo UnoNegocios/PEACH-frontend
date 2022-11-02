@@ -32,7 +32,7 @@ const routes = [
   {
     path: '/reports',
     name: 'Reports',
-    component: () => import('../components/reports/container.vue')
+    component: () => import('../components/reports/old/container.vue')
   },
   {
     path: '/quotations',

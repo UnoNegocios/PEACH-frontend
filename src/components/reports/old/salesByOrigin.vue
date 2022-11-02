@@ -2,8 +2,8 @@
         <div style="background:white;">
             <!-- Header -->
             <v-toolbar class="px-6 py-4 mb-6" flat >
-                <v-toolbar-title class="hidden-md-and-down">Reporte de Ventas por Vendedor</v-toolbar-title>
-                <v-toolbar-title class="hidden-md-and-up">Vendedores</v-toolbar-title>
+                <v-toolbar-title class="hidden-md-and-down">Ventas por Procedencia vs Mes Pasado</v-toolbar-title>
+                <v-toolbar-title class="hidden-md-and-up">Procedencias Mes</v-toolbar-title>
                 <v-btn icon>
                     <v-icon @click.stop="filters2 = !filters2">mdi-filter</v-icon>
                 </v-btn>
@@ -13,13 +13,12 @@
                 <filterSellers @filtersQuotation="filtersQuotation" />
             </v-navigation-drawer>
             <!-- Grafica -->
-            <!--apexchart v-if="renderComponent" type="bar" height="440" :options="optionsUsers" :series="optionsUsers.userSeries"></apexchart-->
-            <apexchart type="bar" height="440" :options="chartOptions" :series="series"></apexchart>
+            <apexchart v-if="renderComponent" type="area" height="440" :options="optionsOrigins" :series="optionsOrigins.originSeries"></apexchart>
         </div>
 </template>
 
 <script>
-import FilterSellers from "../reports/filter"
+import FilterSellers from "../old/filter"
 export default {
     components: {
         'FilterSellers':FilterSellers,
@@ -28,12 +27,13 @@ export default {
         return {
             renderComponent:true,
             quotations:'',
+            how:'dia',
             startDateFrom:'',
             startDateTo:'',
             filters2: false,
             accumulator:0,
             /* Reporte Vendedores */
-            optionsUsers:{
+            optionsOrigins:{
                 yaxis: {
                     labels: {
                         formatter: function (value) {
@@ -46,106 +46,35 @@ export default {
                         return "$" + new Intl.NumberFormat("es-MX").format(value);
                     },
                 },
-                colors: ['#785dd0', '#ff4560', '#ffb019', '#00e495', '#008ffa'],
-                userSeries: [],
+                originSeries: [],
                 plotOptions: {
                     bar: {
                         distributed: true,
                     }
-                },  
-            },
-
-            series: [{
-                name: 'Vendido',
-                data: []//vendido
-            }, {
-                name: 'Faltante para Meta',
-                data: []//vendido - meta
-            }],
-            chartOptions: {
-                tooltip: {
-                    y: {
-                        formatter: function (value) {
-                            return "$" + new Intl.NumberFormat("es-MX").format(value);
-                        },
-                    }
                 },
-                chart: {
-                    type: 'bar',
-                    stacked: true,
-                    stackType: '100%'
-                },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                            position: 'bottom',
-                            offsetX: -10,
-                            offsetY: 0
-                        }
-                    }
-                }],
-                xaxis: {
-                    categories: [],
-                },
-                fill: {
-                    opacity: 1
-                },
-                legend: {
-                    position: 'right',
-                    offsetX: 0,
-                    offsetY: 50
-                },
-          },
+                
+            }
         }
     },
     created () {
-        var date = new Date();
-        this.startDateFrom = date.getFullYear() + '/' + (date.getMonth()+1) + '/1'; //igual mayor que
-        this.startDateTo = date.getFullYear() + '/' + (date.getMonth() + 2) + '/1'; //menor que
-
+        this.startDateFrom = new Date().getFullYear() + '/' + (new Date().getMonth()+1) + '/1'; //igual mayor que
+        this.startDateTo = new Date().getFullYear() + '/' + (new Date().getMonth() + 2) + '/1'; //menor que
+        this.startDateFromHistory = new Date().getFullYear() + '/' + (new Date().getMonth()) + '/1'
+        this.startDateToHistory = new Date().getFullYear() + '/' + (new Date().getMonth()+1) + '/1'
 
         this.quotations = this.$store.state.quotation.sales.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFrom)).filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateTo))
-        this.chartOptions.xaxis.categories = this.ventasXvendedor2
-        this.series[0].data = this.ventasXvendedor
-        this.series[1].data = this.ventasXvendedor3
+        this.quotations2 = this.$store.state.quotation.sales.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFromHistory)).filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateToHistory))
+       
+        this.optionsOrigins.originSeries = [this.ventasXvendedor, this.ventasXvendedor2]
         this.render()
     },
     computed: {
-        ventasXvendedor2(){
-            var ventavendedor = this.quotations 
-            .map(venta => {
-                return {
-                    x: venta.user_id,
-                    y: venta.amount,
-                }
-            })
-            var obj = ventavendedor.sort(function(b,a){
-                return b.x - a.x;
-            });
-            var holder = {};
-            obj.forEach(function(d) {
-                if (holder.hasOwnProperty(d.x)) {
-                    holder[d.x] = holder[d.x] + d.y;
-                } else {
-                    holder[d.x] = d.y;
-                }
-            });
-            var obj2 = [];
-            for (var prop in holder) {
-                obj2.push({ x: prop, y: holder[prop] });
-            }
-            var perro = obj2.map(venta => {
-                return this.vendedor(venta.x)
-            })
-            return perro
-        },
         /* Grafica Ventas por Vendedor */
         ventasXvendedor(){
             var ventavendedor = this.quotations 
             .map(venta => {
                 return {
-                    x: venta.user_id,
+                    x: this.origins(venta.company_id),
                     y: venta.amount,
                 }
             })
@@ -165,15 +94,24 @@ export default {
                 obj2.push({ x: prop, y: holder[prop] });
             }
             var perro = obj2.map(venta => {
-                return venta.y
+                return {
+                    x: venta.x,
+                    y: venta.y,
+                }
             })
-            return perro
+            var resultado = {
+                name: 'Actual',
+                data: perro,
+                //type: 'bar'
+            }
+            return resultado
         },
-        ventasXvendedor3(){
-            var ventavendedor = this.quotations 
+        /* Grafica Ventas por Vendedor */
+        ventasXvendedor2(){
+            var ventavendedor = this.quotations2 
             .map(venta => {
                 return {
-                    x: venta.user_id,
+                    x: this.origins(venta.company_id),
                     y: venta.amount,
                 }
             })
@@ -193,19 +131,30 @@ export default {
                 obj2.push({ x: prop, y: holder[prop] });
             }
             var perro = obj2.map(venta => {
-                return this.goal(venta.x) - venta.y
+                return {
+                    x: venta.x,
+                    y: venta.y,
+                }
             })
-            return perro
+            var resultado = {
+                name: 'Mes Pasado',
+                data: perro,
+                //type: 'bar'
+            }
+            return resultado
         },
         /* lista de usuarios */
-        userLists() {
-            return this.$store.state.user.users;
+        originLists() {
+            return this.$store.state.origin.origins;
+        },
+        companyLists() {
+            return this.$store.state.company.companies;
         }
    },
    methods:{
-        /* Filtrar grafica de Vendedores */
         /* Filtrar grafica de Ventas */
         filtersQuotation: function(params) {
+            var filterQuotationHistory = ''
             var filterQuotation = this.$store.state.quotation.sales
             if(params.company_id!=''&&params.company_id!=undefined&&params.company_id!=null){
                 var uno = filterQuotation.filter(quotation=>quotation.company_id == params.company_id[0])
@@ -239,41 +188,44 @@ export default {
             if(params.note!=''){
                 filterQuotation=filterQuotation.filter(quotation=>this.lowerCase(quotation.note).includes(params.note.toLowerCase()))
             }
+
+
+
             /* Fecha creación */
             if(params.dateCreateFrom!='' && params.dateCreateFrom!=null && params.dateCreateFrom!=undefined){
                 filterQuotation=filterQuotation.filter(quotation=>new Date(quotation.updated_at) > new Date(params.dateCreateFrom))
             }else{
                 filterQuotation=filterQuotation.filter(quotation=>new Date(quotation.updated_at) > new Date(this.startDateFrom))
             }
+
+
             if(params.dateCreateTo!='' && params.dateCreateTo!=null && params.dateCreateTo!=undefined){
                 var dateTwo = new Date(new Date(params.dateCreateTo).setDate(new Date(params.dateCreateTo).getDate() + 1))
                 filterQuotation=filterQuotation.filter(quotation=>new Date(quotation.updated_at) <= dateTwo)
             }else{
                 filterQuotation=filterQuotation.filter(quotation=>new Date(quotation.updated_at) < new Date(this.startDateTo))
             }
+
+
+            
             this.quotations = filterQuotation
-            this.chartOptions.xaxis.categories = this.ventasXvendedor2
-            this.series[0].data = this.ventasXvendedor
-            this.series[1].data = this.ventasXvendedor3
+            this.quotationsPast = filterQuotationHistory
             this.render()
         },
         /* Nombre de vendedor */
-        vendedor(id) {
-            return this.userLists.filter(user => user.id == id).map(user => user.name)[0];
-        },
-        goal(id) {
-            return this.userLists.filter(user => user.id == id).map(user => user.goal_amount)[0];
+        origins(id) {
+            var origin_id = this.companyLists.filter(company => company.id == id).map(company => company.origin_id)[0];
+            if(origin_id!=null){
+                return this.originLists.filter(origin => origin.id == origin_id).map(origin => origin.name)[0];
+            }else{
+                return 'indefinido'
+            }
         },
         /* cargar info */
         render(){
-            this.chartOptions.xaxis.categories = this.ventasXvendedor2
-            this.series[0].data = this.ventasXvendedor
-            this.series[1].data = this.ventasXvendedor3
+            this.optionsOrigins.originSeries = [this.ventasXvendedor, this.ventasXvendedor2]
             this.renderComponent = false;
             this.$nextTick(() => {
-                this.chartOptions.xaxis.categories = this.ventasXvendedor2
-                this.series[0].data = this.ventasXvendedor
-                this.series[1].data = this.ventasXvendedor3
                 this.renderComponent = true;
             });
         },
@@ -306,6 +258,18 @@ export default {
             }else{
                 return ' '
             }
+        },
+        /* Generar mes previo */
+        pastMonth(date){
+            const fill = (number, len) => "0".repeat(len - number.toString().length) + number.toString();
+            var j = new Date(date);
+            var o = j.getFullYear();
+            var e = j.getMonth()-1;
+            var l = j.getDate();
+            var pastDate = new Date(o, e, l);
+            this.startDateFromHistory = new Date(pastDate.getFullYear(), pastDate.getMonth(), pastDate.getDate()); 
+            pastDate = fill(this.startDateFromHistory.getMonth(), 2)+'-'+fill(this.startDateFromHistory.getDate(),2)+'-'+this.startDateFromHistory.getFullYear()
+            return pastDate
         },
     },
 }

@@ -11,7 +11,7 @@
         :headers="showHeaders" 
         :items="quotations" 
         class="elevation-0 px-6 py-4"
-        group-by="MES" 
+        group-by="month" 
         height="600"
         fixed-header
         :footer-props="{'items-per-page-options':[15, 30, 50, quotationsLength]}"
@@ -22,6 +22,31 @@
         :server-items-length="totalQuotations"
         :loading="loading">
             <!-- Header -->
+            <template v-slot:group.header="{ items }">
+
+                <td><strong>{{items[0].month}}</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>{{sumItems(items).subtotal.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
+                <td><strong>{{sumItems(items).iva.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
+                <td><strong>{{sumItems(items).total.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </template>
             <template v-slot:top>
                 <v-toolbar flat class="mb-2">
                     <v-toolbar-title>Ventas</v-toolbar-title>
@@ -453,7 +478,7 @@
                 { text: 'Fecha de Pago', value: 'pay_day' },
                 { text: 'Responsable', value: 'salesman' },
                 { value: 'actions', sortable: false, align: 'end', },
-                { value: 'MES', sortable: false, align: 'end', }
+                { value: 'month', sortable: false, align: 'end', }
             ]},
             rejectionsLists(){
                 return this.$store.state.rejection.rejections;
@@ -512,6 +537,19 @@
             },
         },
         methods: {
+            sumItems(items){
+                var totals = {
+                    subtotal:0,
+                    iva:0,
+                    total:0
+                }
+                for(var i=0; i<items.length; i++){
+                    totals.subtotal = totals.subtotal + (items[i].subtotal*1)
+                    totals.iva = totals.iva + (items[i].iva*1)
+                    totals.total = totals.total + (items[i].total*1)
+                }
+                return totals
+            },
             getDataFromApi () {
                 this.loading = true
                 this.apiCall().then(data => {
@@ -631,7 +669,7 @@
                         pay_day: id.pay_day,
                         salesman: id.salesman,
                         editedItem: id.editedItem,
-                        MES: this.promesadepago(id.promesa_de_pago),
+                        month: this.promesadepago(id.promesa_de_pago),
                         campaign:id.campaign,
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,

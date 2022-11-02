@@ -332,7 +332,7 @@
                 quotations =  quotations.map(id=>{
                     return{
                         agency: this.agency(id.agency),
-                        brand: id.brand.name,
+                        brand: this.agency(id.brand),
                         services: id.service,
                         service_date: id.service_date,
                         total: id.total,

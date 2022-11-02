@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Filter from "../reports/filter"
+import Filter from "../old/filter"
 export default {
     components: {
         'filterQuotations':Filter,
