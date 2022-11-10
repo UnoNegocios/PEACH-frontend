@@ -22,21 +22,85 @@
         </v-tooltip>
 
         <!-- Reportes -->
-        <div v-show="permissions('reports')">
-        <v-tooltip right open-delay="1000">
-          <template v-slot:activator="{ on, attrs }">
-            <v-list-item to="/reports" v-bind="attrs" v-on="on">
-              <v-list-item-action class="mr-3">
-                <v-icon> mdi-chart-bar</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Reportes</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            </template>
-          <span>Graficas mensuales y por día</span>
-        </v-tooltip>
-        </div>
+        <v-expansion-panels class="sinsombra">
+          <v-expansion-panel style="background:transparent!important;">
+            <v-expansion-panel-header style="font-weight:500; font-size:0.8125rem; color:#202020; padding:0px!important;">
+              <div v-show="permissions('reports')">
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item v-bind="attrs" v-on="on">
+                      <v-list-item-action class="mr-3">
+                        <v-icon> mdi-chart-bar</v-icon>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Reportes</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reportes de ventas por categorías</span>
+                </v-tooltip>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item to="/total-report" v-bind="attrs" v-on="on">
+                      
+                      <v-list-item-content>
+                        <v-list-item-title>Ventas por Mes</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reporte de ventas general mensual con ganancia</span>
+                </v-tooltip>
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item to="/influencers-reports" v-bind="attrs" v-on="on">
+                      
+                      <v-list-item-content>
+                        <v-list-item-title>Ventas por Influencer</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reporte de ventas por influencer con ganancia</span>
+                </v-tooltip>
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item to="/agencies-reports" v-bind="attrs" v-on="on">
+                      
+                      <v-list-item-content>
+                        <v-list-item-title>Ventas por Agencia</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reporte de ventas por Agencia con ganancia</span>
+                </v-tooltip>
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item to="/department-reports" v-bind="attrs" v-on="on">
+                      
+                      <v-list-item-content>
+                        <v-list-item-title>Ventas por Departamento</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reporte de ventas por departamento con ganancia</span>
+                </v-tooltip>
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item to="/users-reports" v-bind="attrs" v-on="on">
+                      
+                      <v-list-item-content>
+                        <v-list-item-title>Ventas por Responsable</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span>Reporte de ventas por responsable con ganancia</span>
+                </v-tooltip>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
 
         <!-- empresas -->
         <div v-show="permissions('clients')">
@@ -111,7 +175,7 @@
       </v-list>
       <template v-slot:append>
         <div style="color:#9ca3a5; font-size: 12px;" class="pa-2">
-          UNOCRM | v4.0.48 <v-icon> mdi-settings</v-icon>
+          UNOCRM | v4.0.49 <v-icon> mdi-settings</v-icon>
         </div>
       </template>
     </v-navigation-drawer>

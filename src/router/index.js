@@ -29,11 +29,33 @@ const routes = [
     name: 'Dashboard',
     component: () => import('../components/dashboard/container.vue')
   },
+
   {
-    path: '/reports',
+    path: '/total-report',
     name: 'Reports',
-    component: () => import('../components/reports/old/container.vue')
+    component: () => import('../components/reports/salesByMonth.vue')
   },
+  {
+    path: '/influencers-reports',
+    name: 'Reports',
+    component: () => import('../components/reports/salesByInfluencers.vue')
+  },
+  {
+    path: '/agencies-reports',
+    name: 'Reports',
+    component: () => import('../components/reports/salesByAgencies.vue')
+  },
+  {
+    path: '/department-reports',
+    name: 'Reports',
+    component: () => import('../components/reports/salesBKvsMGMT.vue')
+  },
+  {
+    path: '/users-reports',
+    name: 'Reports',
+    component: () => import('../components/reports/salesByUser.vue')
+  },
+
   {
     path: '/quotations',
     name: 'Quotations',

@@ -76,7 +76,7 @@ export default {
                     colors: ['#fff']
                 },
                 title: {
-                    text: 'Ventas por Influencer'
+                    text: 'Ventas por Agencia'
                 },
                 xaxis: {
                     categories: [],
@@ -123,13 +123,13 @@ export default {
         }
     },
     created () {
-        axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=influencers&include=influencer').then(response=>{
+        axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=agencies&include=agency').then(response=>{
             var reports = response.data.sort(function(a,b){
                 return ((b.peach_amount*1) + (b.influencer_amount*1)) - ((a.peach_amount*1) + (a.influencer_amount*1))
-            }).filter(influencer=>influencer!=undefined)
-            this.series[0].data = reports.map(influencer=>influencer.peach_amount*1)
-            this.series[1].data = reports.map(influencer=>influencer.influencer_amount*1)
-            this.chartOptions.xaxis.categories = reports.map(influencer=>this.instagram(influencer.influencer))
+            }).filter(report=>report.agency_id != null)
+            this.series[0].data = reports.map(agency=>agency.peach_amount*1)
+            this.series[1].data = reports.map(agency=>agency.influencer_amount*1)
+            this.chartOptions.xaxis.categories = reports.map(agency=>agency.agency.name)
             this.showReport = true
         })
     },
@@ -139,17 +139,7 @@ export default {
         }
     },
     methods:{
-        instagram(influencer){
-            if(influencer.social_networks!=undefined){
-                return influencer.social_networks.instagram
-            }else{
-                if(influencer.last!=undefined){
-                    return influencer.name + ' ' + influencer.last
-                }else{
-                    return influencer.name
-                }
-            }
-        }
+        
     },
 }
 </script>

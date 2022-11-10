@@ -267,14 +267,15 @@ import axios from "axios";
                 }   
             },
             searchAgencies(val){
-                //if (this.agencyLists.length > 0) return
                 if (this.isLoadingAgencies) return
                 this.isLoadingAgencies = true
                 //var filter = this.$store.state.currentUser.client_filter
                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/agency/search?filter[name]='+val)//+filter)
                 .then(res => {
+                    console.log(this.entriesAgencies)
                     if(this.entriesAgencies.length>0){
                         this.entriesAgencies.concat(res.data.data)
+                        console.log(this.entriesAgencies)
                     }else{
                         this.entriesAgencies = res.data.data
                     }
@@ -341,33 +342,33 @@ import axios from "axios";
                 return perro 
             },
             agencyLists(){
-                if(this.editedQuotation.agency[0]==null){
+                /*if(this.editedQuotation.agency[0]==null){
                     return this.entriesAgencies.map(id => {
                         return{
                             id:id.id,
                             name:id.name
                         }
                     })
-                }else{
+                }else{*/
                     this.pause = true
                     this.type = 'agency'
-                    return this.entriesAgencies.map(id => {
+                    return this.entriesAgencies.concat(this.editedQuotation.agency).map(id => {
                         return{
                             id:id.id,
                             name:id.name
                         }
-                    }).concat(this.editedQuotation.agency)
-                }
+                    })
+                //}
             },
             brandLists(){
-                if(this.editedQuotation.brand[0]==null){
+                /*if(this.editedQuotation.brand[0]==null){
                     return this.entriesBrands.map(id => {
                         return{
                             id:id.id,
                             name:id.name
                         }
                     })
-                }else{
+                }else{*/
                     if(this.editedQuotation.agency[0]==null){
                         this.pause = true
                         this.type = 'brand'
@@ -378,7 +379,7 @@ import axios from "axios";
                             name:id.name
                         }
                     }).concat(this.editedQuotation.brand)
-                }
+                //}
             },
             usersLists(){
                 return this.$store.state.user.salesman;

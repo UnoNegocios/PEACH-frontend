@@ -30,27 +30,25 @@
                     <v-card-text class="pb-0 pt-0">
                         <v-container>
                             <v-row>
-                                <v-col cols="12" class="py-0" sm="4" md="4">
+                                <v-col cols="12" class="py-0" sm="6" md="6">
                                     <v-text-field prepend-inner-icon="mdi-domain" :rules="[v => !!v || 'Campo requerido']" v-model="company.name" label="Nombre de Empresa*"></v-text-field>
                                 </v-col>
-                                <v-col cols="12" class="py-0" sm="4" md="4">
+                                <v-col cols="12" class="py-0" sm="6" md="6">
                                     <vue-tel-input-vuetify type="number" v-model="company.phone" label="Teléfono"></vue-tel-input-vuetify>
                                 </v-col>
-                                <v-col class="pt-0" cols="12" sm="4" md="4">
+                                <v-col class="pt-0" cols="12" sm="6" md="6">
                                     <v-text-field prepend-inner-icon="mdi-email" v-model="company.email" label="Correo Electrónico"></v-text-field>
                                 </v-col>
-                            </v-row>
-                            <v-row class="py-4">
                                 <v-col class="py-0" cols="12" sm="6" md="6">
                                     <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="company.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
                                         <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
                                     </v-autocomplete>
                                 </v-col>
-                                <v-col class="py-0" cols="12" sm="6" md="6">
+                                <!--v-col class="py-0" cols="12" sm="6" md="6">
                                     <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="company.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
                                         <template slot="no-data" class="pa-2">No existen estatus relacionados.</template>                      
                                     </v-autocomplete>
-                                </v-col>
+                                </v-col-->
                             </v-row>
                         </v-container>
                     </v-card-text>
