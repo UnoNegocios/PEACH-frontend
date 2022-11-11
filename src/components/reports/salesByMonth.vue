@@ -80,6 +80,10 @@ export default {
         }
     },
     created () {
+        var promise_date_between = []
+        var date = new Date()
+        promise_date_between[0] = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
+        promise_date_between[1] = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
         axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=sales').then(response=>{
             this.series = [{
                 name: 'Total',

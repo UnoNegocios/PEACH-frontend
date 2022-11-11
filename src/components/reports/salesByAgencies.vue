@@ -1,5 +1,15 @@
 <template>
     <v-container style="max-width:100vw;" class="mb-6">
+        <v-row class="my-0 mx-4 px-12 pt-4" style="background:white;">
+            <v-card-title>Ventas por Agencia</v-card-title>
+            <v-spacer/>
+            <v-menu offset-y :close-on-content-click="closeDatePicker(date_filter)">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-text-field style="max-width:280px;" class="mt-5" outlined dense clearable v-model="date_filter" label="Fecha Promesa" prepend-icon="mdi-calendar" v-bind="attrs" readonly v-on="on"></v-text-field>
+                </template>
+                <v-date-picker v-model="date_filter" range></v-date-picker>
+            </v-menu>
+        </v-row>
         <v-card v-if="showReport" id="chart" class="pa-4 elevation-0 mx-4">
             <apexchart type="bar" :height="height" :options="chartOptions" :series="series"></apexchart>
         </v-card>
@@ -20,6 +30,7 @@ import axios from "axios"
 export default {
     data: function () {
         return {
+            date_filter:[],
             showReport: false,
             series: [{
                 name: 'Monto Peach',
@@ -65,7 +76,7 @@ export default {
                         }
                     },
                 },
-                colors: ['black', '#c67ce4'],
+                //colors: ['black', '#c67ce4'],
                 dataLabels: {
                     formatter: function (val) {
                         return val.toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})
@@ -76,7 +87,7 @@ export default {
                     colors: ['#fff']
                 },
                 title: {
-                    text: 'Ventas por Agencia'
+                    text: ''
                 },
                 xaxis: {
                     categories: [],
@@ -123,23 +134,43 @@ export default {
         }
     },
     created () {
-        axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=agencies&include=agency').then(response=>{
-            var reports = response.data.sort(function(a,b){
-                return ((b.peach_amount*1) + (b.influencer_amount*1)) - ((a.peach_amount*1) + (a.influencer_amount*1))
-            }).filter(report=>report.agency_id != null)
-            this.series[0].data = reports.map(agency=>agency.peach_amount*1)
-            this.series[1].data = reports.map(agency=>agency.influencer_amount*1)
-            this.chartOptions.xaxis.categories = reports.map(agency=>agency.agency.name)
-            this.showReport = true
-        })
+        var promise_date_between = []
+        var date = new Date()
+        promise_date_between[0] = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
+        promise_date_between[1] = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
+        this.date_filter = promise_date_between
     },
     computed: {
         height(){
             return (40 * this.chartOptions.xaxis.categories.length) + 'px'
         }
     },
+    watch:{
+        date_filter:{
+            handler(){
+                if(this.date_filter!=null && this.date_filter.length==2){
+                    this.showReport = false
+                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=agencies&include=agency&filter[promise_date_between]='+this.date_filter).then(response=>{
+                        var reports = response.data.sort(function(a,b){
+                            return ((b.peach_amount*1) + (b.influencer_amount*1)) - ((a.peach_amount*1) + (a.influencer_amount*1))
+                        }).filter(report=>report.agency_id != null)
+                        this.series[0].data = reports.map(agency=>agency.peach_amount*1)
+                        this.series[1].data = reports.map(agency=>agency.influencer_amount*1)
+                        this.chartOptions.xaxis.categories = reports.map(agency=>agency.agency.name)
+                        this.showReport = true
+                    })
+                }
+            },deep:true
+        }
+    },
     methods:{
-        
+        closeDatePicker(dates){
+            if(dates!=null && dates.length==2){
+                return true
+            }else{
+                return false
+            }
+        },
     },
 }
 </script>
