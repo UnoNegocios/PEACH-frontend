@@ -170,8 +170,6 @@ import axios from "axios";
         },
         grey(){
             if( this.client_type==''||this.client_type==null||this.client_type==undefined||
-                this.company.origin_id==''||this.company.origin_id==null||this.company.origin_id==undefined||
-                this.company.status_id==''||this.company.status_id==null||this.company.status_id==undefined||
                 this.company.name==''||this.company.name==null||this.company.name==undefined||
                 (this.client_type=='brand' && (this.company.agenciesId.length<1||this.company.agenciesId==undefined||this.company.agenciesId==null||this.company.agenciesId==''))
                 ){
