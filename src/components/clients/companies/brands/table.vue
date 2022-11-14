@@ -212,17 +212,35 @@ export default {
                 })
             })
         },
+        name(item){
+            if(item!=undefined){
+                if(item.last!=undefined){
+                    return item.name + ' ' + item.last
+                }else{
+                    return item.name
+                }
+            }else{
+                return ''
+            }
+        },
+        returnId(item){
+            if(item!=undefined){
+                return item.id
+            }else{
+                return ''
+            }
+        },
         mapBrands(brands){
             brands = brands.map(id=>{
                 return{
                     id: id.id,
                     name: id.name,
-                    origin: id.origin.name,
+                    origin: this.name(id.origin),
                     status: id.status,
                     created_at: id.created_at,
                     updated_at: id.updated_at,
                     agencies: id.agencies,
-                    agent: id.agent.name + ' ' + id.agent.last,
+                    agent: this.name(id.agent),
                     city: id.city,
                     contact_medium: id.contact_medium,
                     email: id.email,
@@ -231,13 +249,13 @@ export default {
                     razon_social: id.razon_social,
                     rfc: id.rfc,
                     special_note: id.special_note,
-                    user_id:id.agent.id,
                     agenciesId:this.perro(id.agencies),
-                    user_id:id.agent.id,
-                    origin_id:id.origin.id,
-                    status_id:id.status.id,
+                    user_id:this.returnId(id.agent),
+                    user_id:this.returnId(id.agent),
+                    origin_id:this.returnId(id.origin),
+                    status_id:this.returnId(id.status),
 
-                    key: id.agent.job_position.toUpperCase() + id.agent.name.slice(0,1).toUpperCase(),
+                    //key: id.agent.job_position.toUpperCase() + id.agent.name.slice(0,1).toUpperCase(),
                     editedItem: id
                 }
             });
