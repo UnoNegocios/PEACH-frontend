@@ -109,7 +109,7 @@ export default {
     methods:{
         month(number){
             var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            return meses[number*1]
+            return meses[(number*1)-1]
         }
     }
 }

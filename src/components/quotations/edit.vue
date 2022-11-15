@@ -4,12 +4,12 @@
             <v-icon style="background: #e7e8e9; padding: 10px!important; border-radius: 50%;" class="mr-4">mdi-file-document-outline</v-icon>
             <span >Editar {{quole}}</span>
             <v-spacer></v-spacer>
-            <v-col cols="12" sm="6" md="2" class="pb-0 mb-0">
+            <!--v-col cols="12" sm="6" md="2" class="pb-0 mb-0">
                 <v-radio-group v-model="type" class="my-0">
                     <v-radio label="Agencia" color="primary" value="agency"></v-radio>
                     <v-radio label="Marca" color="primary" value="brand"></v-radio>
                 </v-radio-group>
-            </v-col>
+            </v-col-->
             <v-col cols="12" sm="6" md="3">
                 <v-autocomplete  :rules="[v => !!v || 'Campo requerido']" v-if="permissions('assignSales')" clearable v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">
                     <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
@@ -25,7 +25,7 @@
                     <v-col class="pt-0" cols="12" sm="6" md="9">
                         <v-row>
                             <v-col cols="12" sm="6" md="6">
-                                <v-autocomplete :disabled="type=='brand'" v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
+                                <v-autocomplete v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
                                     <template slot="no-data"><div class="px-4 py-1">No existen agencias relacionadas.</div></template>  
                                 </v-autocomplete>
                             </v-col>
@@ -135,7 +135,6 @@ const initialState = () => {
         },
         gris2:false,
         pause:false,
-        type:'brand',
         company:'',
         status:'',
         datePicker:'',
@@ -191,7 +190,8 @@ import axios from "axios";
                 influencer_amount:this.editedQuotation.influencer_amount*1,
                 campaign:this.editedQuotation.campaign,
                 invoice_date:this.editedQuotation.invoice_date,
-                payment_promise_date:this.editedQuotation.payment_promise_date
+                payment_promise_date:this.editedQuotation.payment_promise_date,
+
             }
         },
         components: {
@@ -243,8 +243,12 @@ import axios from "axios";
                         influencer_amount:this.editedQuotation.influencer_amount*1,
                         campaign:this.editedQuotation.campaign,
                         invoice_date:this.editedQuotation.invoice_date,
-                        payment_promise_date:this.editedQuotation.payment_promise_date
+                        payment_promise_date:this.editedQuotation.payment_promise_date,
+
                     }
+                    this.entriesInfluencers = [this.editedQuotation.influencer]
+                    this.entriesAgencies = [this.editedQuotation.agency]
+                    this.entriesBrands = [this.editedQuotation.brand]
                 }, deep:true,
             },
             searchInfluencers(val){
@@ -298,18 +302,6 @@ import axios from "axios";
                     }
                 }).finally(() => (this.isLoadingBrand = false))
             },
-            type: {
-                handler () {
-                    if(!this.pause){
-                        this.quotation.agency_id = null
-                        this.quotation.brand_id = null
-                        this.entriesAgencies = []
-                        this.entriesBrands = []
-                    }   
-                    this.pause = false
-                },
-                deep: true,
-            }
         },
         computed: {
             influencer(){
@@ -342,44 +334,21 @@ import axios from "axios";
                 return perro 
             },
             agencyLists(){
-                /*if(this.editedQuotation.agency[0]==null){
-                    return this.entriesAgencies.map(id => {
-                        return{
-                            id:id.id,
-                            name:id.name
-                        }
-                    })
-                }else{*/
-                    this.pause = true
-                    this.type = 'agency'
-                    return this.entriesAgencies.concat(this.editedQuotation.agency).map(id => {
-                        return{
-                            id:id.id,
-                            name:id.name
-                        }
-                    })
-                //}
+                this.pause = true
+                return this.entriesAgencies.concat(this.editedQuotation.agency).map(id => {
+                    return{
+                        id:id.id,
+                        name:id.name
+                    }
+                })
             },
             brandLists(){
-                /*if(this.editedQuotation.brand[0]==null){
-                    return this.entriesBrands.map(id => {
-                        return{
-                            id:id.id,
-                            name:id.name
-                        }
-                    })
-                }else{*/
-                    if(this.editedQuotation.agency[0]==null){
-                        this.pause = true
-                        this.type = 'brand'
+                return this.entriesBrands.map(id => {
+                    return{
+                        id:id.id,
+                        name:id.name
                     }
-                    return this.entriesBrands.map(id => {
-                        return{
-                            id:id.id,
-                            name:id.name
-                        }
-                    }).concat(this.editedQuotation.brand)
-                //}
+                }).concat(this.editedQuotation.brand)
             },
             usersLists(){
                 return this.$store.state.user.salesman;
@@ -398,15 +367,6 @@ import axios from "axios";
             } 
         },
         methods: {
-            isBooking(){
-                return this.influencerLists.filter(influencer=>influencer.id == this.quotation.influencer_id).map(influencer=>influencer.is_booking)[0]
-            },
-            booking(id){
-                var booking = this.$store.state.user.users.filter(user=>user.id == id).map(user=>user.booking)[0]
-                if(booking=='Booking'){
-                    return true
-                }
-            },
             permissions(permission){
                 if(this.currentUser.id==1){
                     return true
@@ -439,9 +399,6 @@ import axios from "axios";
             },
             save(){
                 this.gris2 = true
-                if(this.type=='brand'){
-                    this.quotation.agency_id = ''
-                }
                 this.quotation.last_updated_by_user_id = this.currentUser.id
                 axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales/"+this.editedQuotation.id, this.quotation).then(response=>{
                     this.close()

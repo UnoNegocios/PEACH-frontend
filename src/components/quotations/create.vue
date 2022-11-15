@@ -4,12 +4,12 @@
             <v-icon style="background: #e7e8e9; padding: 10px!important; border-radius: 50%;" class="mr-4">mdi-file-document-outline</v-icon>
             <span >Nueva {{quole}}</span>
             <v-spacer></v-spacer>
-            <v-col cols="12" sm="6" md="2" class="pb-0 mb-0">
+            <!--v-col cols="12" sm="6" md="2" class="pb-0 mb-0">
                 <v-radio-group v-model="type" class="my-0">
                     <v-radio label="Agencia" color="primary" value="agency"></v-radio>
                     <v-radio label="Marca" color="primary" value="brand"></v-radio>
                 </v-radio-group>
-            </v-col>
+            </v-col-->
             <v-col cols="12" sm="6" md="3">
                 <v-autocomplete  :rules="[v => !!v || 'Campo requerido']" v-if="permissions('assignSales')" clearable v-model="quotation.user_id" :items="usersLists" label="Responsable" item-text="name" item-value="id">
                     <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
@@ -25,7 +25,7 @@
                     <v-col class="pt-0" cols="12" sm="6" md="9">
                         <v-row>
                             <v-col cols="12" sm="6" md="6">
-                                <v-autocomplete :disabled="type=='brand'" v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
+                                <v-autocomplete v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
                                     <template slot="no-data"><div class="px-4 py-1">No existen agencias relacionadas.</div></template>  
                                 </v-autocomplete>
                             </v-col>
@@ -146,7 +146,6 @@ import axios from "axios";
                 color: null
             },
             gris2: false,
-            type:'brand',
             company:'',
             status:'',
             datePicker:false,
@@ -265,15 +264,6 @@ import axios from "axios";
                     }
                 }).finally(() => (this.isLoadingBrand = false))
             },
-            type: {
-                handler () {
-                    this.quotation.agency_id = null
-                    this.quotation.brand_id = null
-                    this.entriesAgencies = []
-                    this.entriesBrands = []
-                },
-                deep: true,
-            }
         },
         computed: {
             influencer(){
@@ -380,9 +370,6 @@ import axios from "axios";
             },
             save(){
                 this.gris2 = true
-                if(this.type=='brand'){
-                    this.quotation.agency_id = ''
-                }
                 this.quotation.created_by_user_id = this.currentUser.id
                 this.quotation.last_updated_by_user_id = this.currentUser.id
                 if(this.quotation.user_id==''||this.quotation.user_id==undefined||this.quotation.user_id==null){
