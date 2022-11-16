@@ -215,6 +215,13 @@ export default {
                 })
             })
         },
+        returnId(item){
+            if(item!=undefined){
+                return item.id
+            }else{
+                return ''
+            }
+        },
         mapAgencies(agencies){
             return agencies.map(id=>{
                 return{
@@ -234,11 +241,11 @@ export default {
                     razon_social: id.razon_social,
                     rfc: id.rfc,
                     special_note: id.special_note,
-                    user_id:id.agent.id,
+                    user_id:this.returnId(id.agent),
                     //agenciesId:this.perro(id.agencies),
-                    user_id:id.agent.id,
-                    origin_id:id.origin.id,
-                    status_id:id.status.id,
+                    user_id:this.returnId(id.agent),
+                    origin_id:this.returnId(id.origin),
+                    status_id:this.returnId(id.status),
 
                     key: id.agent.job_position.toUpperCase() + id.agent.name.slice(0,1).toUpperCase(),
                     editedItem: id
