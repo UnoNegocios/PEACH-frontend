@@ -246,9 +246,15 @@ import axios from "axios";
                         payment_promise_date:this.editedQuotation.payment_promise_date,
 
                     }
-                    this.entriesInfluencers = [this.editedQuotation.influencer]
-                    this.entriesAgencies = [this.editedQuotation.agency]
-                    this.entriesBrands = [this.editedQuotation.brand]
+                    if(this.editedQuotation.influencer!=undefined){
+                        this.entriesInfluencers = [this.editedQuotation.influencer]
+                    }
+                    if(this.editedQuotation.agency!=undefined){
+                        this.entriesAgencies = [this.editedQuotation.agency]
+                    }
+                    if(this.editedQuotation.brand!=undefined){
+                        this.entriesBrands = [this.editedQuotation.brand]
+                    }
                 }, deep:true,
             },
             searchInfluencers(val){
@@ -279,7 +285,6 @@ import axios from "axios";
                     console.log(this.entriesAgencies)
                     if(this.entriesAgencies.length>0){
                         this.entriesAgencies.concat(res.data.data)
-                        console.log(this.entriesAgencies)
                     }else{
                         this.entriesAgencies = res.data.data
                     }
@@ -324,23 +329,28 @@ import axios from "axios";
                         name: id.social_networks.instagram,
                         is_booking: id.is_booking
                     }
-                }).concat([this.editedQuotation.influencer].map(id=>{
+                })/*.concat([this.editedQuotation.influencer].map(id=>{
                     return{
                         id:id.id,
                         name: id.social_networks.instagram,
                         is_booking: id.is_booking
                     }
-                }))
+                }))*/
                 return perro 
             },
             agencyLists(){
                 this.pause = true
-                return this.entriesAgencies.concat(this.editedQuotation.agency).map(id => {
+                return this.entriesAgencies.map(id => {
                     return{
                         id:id.id,
                         name:id.name
                     }
-                })
+                })/*.concat(this.editedQuotation.agency).map(id => {
+                    return{
+                        id:id.id,
+                        name:id.name
+                    }
+                })*/
             },
             brandLists(){
                 return this.entriesBrands.map(id => {
@@ -348,7 +358,7 @@ import axios from "axios";
                         id:id.id,
                         name:id.name
                     }
-                }).concat(this.editedQuotation.brand)
+                })//.concat(this.editedQuotation.brand)
             },
             usersLists(){
                 return this.$store.state.user.salesman;
