@@ -149,6 +149,9 @@ import axios from "axios";
             searchCities:'',
         }),
     computed: {
+        name(){
+            return this.company.name
+        },
         agencyLists(){
             return this.entriesAgencies.map(id => {
                 return{
@@ -197,6 +200,11 @@ import axios from "axios";
         },
     },
     watch: {
+        name:{
+            handler(){
+                this.company.name = this.company.name.toUpperCase()
+            }, deep:true
+        },
         searchAgencies(val){
             //if (this.agencyLists.length > 0) return
             if (this.isLoadingAgencies) return

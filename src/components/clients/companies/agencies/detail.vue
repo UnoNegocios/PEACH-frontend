@@ -55,6 +55,19 @@
               <v-card outlined>
                 <contacts v-bind:client="companyDetail"/>
               </v-card>
+
+              <v-card class="px-6 pa-6 mt-4" outlined>
+                <v-list>
+                  <div class="overline mb-2">
+                    Marcas
+                  </div>
+                  <v-list-item v-for="brand in brands" :key="brand.id" class="my-0 py-0">
+                    <v-icon :to="{ path: '/clients/brand/'+ item.id}" small class="mr-4"> mdi-eye</v-icon>{{brand.name}}
+                  </v-list-item>
+                </v-list>
+              </v-card>
+
+
               <v-card class="px-6 pa-6 mt-4" outlined>
                 <div class="overline mb-2">
                   Recordatorio/Nota Especial
@@ -183,10 +196,26 @@ import ActivityLog from "../../../activitylog/container"
         companyDetail:null
       }
     },
+    watch:{
+      agency_id:{
+        handler(){
+          axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?filter[agencies.id]=' + this.agency_id)// + filter2
+          .then(res => {
+              this.brands = response.data.data
+          })
+        },deep: true
+      }
+    },
     created(){
+      axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?filter[agencies.id]=' + this.agency_id).then(res => {
+          this.brands = response.data.data
+      })
       this.$emit("closeDrawer", false);
     },
     computed:{
+      agency_id(){
+        return this.$route.params.agency_id
+      },
       currentUser:{
         get(){
           return this.$store.state.currentUser.user

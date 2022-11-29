@@ -16,6 +16,8 @@ import influencer_payment from "./modules/influencer_payment"
 import state from "./modules/state"
 import city from "./modules/city"
 
+import category from "./modules/category"
+
 
 Vue.use(Vuex)
 
@@ -40,5 +42,6 @@ export default new Vuex.Store({
     company,
     user,
     status,
+    category
   }
 })

@@ -84,26 +84,28 @@ export default {
         var date = new Date()
         promise_date_between[0] = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
         promise_date_between[1] = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
-        axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=sales').then(response=>{
+        axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=sales').then(server_resp=>{
+            var response = server_resp.data.sort(function(a,b){
+                return (a.month*1) - (b.month*1)
+            })
             this.series = [{
                 name: 'Total',
                 type: 'column',
-                data: response.data.map(resp=>resp.total),
+                data: response.map(resp=>resp.total),
                 //color:'black'
             }, {
                 name: 'Peach',//peach_amount
                 type: 'area',
-                data: response.data.map(resp=>resp.peach_amount),
+                data: response.map(resp=>resp.peach_amount),
                 //color:'#c67ce4'
             }, {
                 name: 'Influencer',//influencer_amount
                 type: 'line',
-                data: response.data.map(resp=>resp.influencer_amount),
+                data: response.map(resp=>resp.influencer_amount),
                 //color:'#c67ce4'
             }]
-            this.chartOptions.labels = response.data.map(resp=>this.month(resp.month))
+            this.chartOptions.labels = response.map(resp=>this.month(resp.month))
             this.showReport = true
-            console.log(this.chartOptions.labels)
         })
     },
     methods:{

@@ -37,8 +37,8 @@
                 <td><strong>{{sumItems(items).total.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
+                <td><strong>{{sumItems(items).peach.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
+                <td><strong>{{sumItems(items).influencer.toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}</strong></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -541,12 +541,17 @@
                 var totals = {
                     subtotal:0,
                     iva:0,
-                    total:0
+                    total:0,
+                    peach:0,
+                    influencer:0
                 }
                 for(var i=0; i<items.length; i++){
                     totals.subtotal = totals.subtotal + (items[i].subtotal*1)
                     totals.iva = totals.iva + (items[i].iva*1)
                     totals.total = totals.total + (items[i].total*1)
+                    totals.peach = totals.peach + (items[i].amount_peach*1)
+                    totals.influencer = totals.influencer + (items[i].influencer_amount*1)
+
                 }
                 return totals
             },
@@ -587,7 +592,7 @@
                             link = link + "sort=" + sortBy[0] + '&'
                         }
                     }
-                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage).then(response => {
+                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage + '&status=vendido').then(response => {
                         this.quotationsLength = response.data.meta.total
                         items = this.mapQuotations(response.data.data)
                         total = response.data.meta.total

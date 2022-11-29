@@ -120,13 +120,13 @@ export default {
                 }
                 if(localStorage.getItem('filtersSales')==undefined&&localStorage.getItem('filtersSales')==null){
                     axios
-                    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/totals/sales?"+link + '&status=vendido')//+'?filter[date_between]='+startDate)
+                    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/totals/sales?"+link + '&status=cancelado')//+'?filter[date_between]='+startDate)
                     .then(response => {
                         resolve(response.data)
                     });
                 }else{
                     axios
-                    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/totals/sales?"+ JSON.parse(localStorage.getItem('filtersSales'))+'&'+link + '&status=vendido')
+                    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/totals/sales?"+ JSON.parse(localStorage.getItem('filtersSales'))+'&'+link + '&status=cancelado')
                     .then(response=>{
                         resolve(response.data)
                     })

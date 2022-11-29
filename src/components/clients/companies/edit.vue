@@ -154,6 +154,9 @@ import axios from "axios";
     },
     data: () => ( initialState() ),
     computed: {
+        name(){
+            return this.company.name
+        },
         agencyLists(){
             return this.entriesAgencies.map(id => {
                 return{
@@ -230,6 +233,11 @@ import axios from "axios";
         }
     },
     watch: {
+        name:{
+            handler(){
+                this.company.name = this.company.name.toUpperCase()
+            }, deep:true
+        },
         editedCompany:{
             handler(){
                 this.e1 = 1

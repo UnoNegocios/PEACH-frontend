@@ -1,5 +1,6 @@
 <template>
     <v-container style="max-width:100vw;">
+    <v-text-field @keydown.enter="searchNow=!searchNow" class="mx-12" v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
             <v-data-table 
             height="600"
             fixed-header
@@ -114,6 +115,8 @@ export default {
         refreshBrands:Boolean
     },
     data: () => ({
+        searchNow:false,
+        search:'',
         options: {},
         showTable:true,
         sheet: false,
@@ -156,6 +159,12 @@ export default {
         },
     },
     watch: {
+        searchNow: {
+            handler () {
+                this.getDataFromApi()
+            },
+            deep: true,
+        },
         options: {
             handler () {
                 this.getDataFromApi()
@@ -193,6 +202,9 @@ export default {
                 var link = this.$store.state.currentUser.client_filter
                 if(localStorage.getItem('filtersBrands')!=null){
                     link = JSON.parse(localStorage.getItem('filtersBrands'))+'&'
+                }
+                if(this.search!=''){
+                    link = link + 'filter[name]='+this.search+'&'
                 }
                 /*if(sortBy.length === 1){
                     if(sortDesc[0]){
@@ -234,7 +246,7 @@ export default {
             brands = brands.map(id=>{
                 return{
                     id: id.id,
-                    name: id.name,
+                    name: id.name.toUpperCase(),
                     origin: this.name(id.origin),
                     status: id.status,
                     created_at: id.created_at,

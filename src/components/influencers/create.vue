@@ -62,6 +62,16 @@
                             <v-col cols="12" sm="4" md="3" class="py-0">
                                 <v-text-field v-model="editedItem.bank_account_details.tarejta" label="Tarjeta"></v-text-field>
                             </v-col>
+
+                            <v-col cols="12" sm="4" md="6" class="py-0">
+                                <v-text-field v-model="editedItem.commission_percentage" suffix="%" label="Porcentaje Comisión" v-if="!editedItem.is_booking"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" sm="4" md="6" class="py-0">
+                                <v-autocomplete class="mb-0 pb-0" v-model="editedItem.categories" small-chips :items="categories" item-value="id" item-text="name" label="Categoría(s)" multiple chips></v-autocomplete>
+                            </v-col>
+
+
                         </v-row>
                     <!--/v-stepper-content>
                     <v-stepper-content step="2" class="pt-0">
@@ -85,7 +95,7 @@
         
 
         <v-card-actions class="pt-4">
-            <v-text-field v-model="editedItem.commission_percentage" suffix="%" label="Porcentaje Comisión" v-if="!editedItem.is_booking"></v-text-field>
+            
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="close">
                 Cancelar
@@ -121,6 +131,7 @@ export default {
         //e1: 1,
         disable:'',
         editedItem: {
+            categories:[],
             parent_id:'',
             name:'',
             last:'',
@@ -157,6 +168,9 @@ export default {
         },
     },
     computed:{
+        categories(){
+            return this.$store.state.category.categories
+        },
         valid(){
             if(this.editedItem.name!=''){
                 return false
@@ -220,6 +234,7 @@ export default {
             this.editedItem.city=''
             this.editedItem.password=''
             this.editedItem.avatar=''
+            this.editedItem.categories=''
 
             this.editedItem.is_booking=false
 
