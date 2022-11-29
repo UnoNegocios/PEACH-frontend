@@ -273,7 +273,7 @@ export default {
                             bank_account_details:id.bank_account_details,
                             commission_percentage:id.commission_percentage,
                             role:'Influencer',
-                            categories:id.categories.map(id=>id.id)
+                            categories:id.categories//.map(id=>id.id)
                         }
                     })[0]
                 }
