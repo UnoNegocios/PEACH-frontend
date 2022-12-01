@@ -203,7 +203,7 @@ export default {
                 }
 
                 if(this.searchbyCategory!=''){
-                    link = link + '&filter[categories]=' + this.searchbyCategory
+                    link = link + '&filter[categories.id]=' + this.searchbyCategory
                 }
                 if(this.searchbyState!=''){
                     link = link + '&filter[state]=' + this.searchbyState
