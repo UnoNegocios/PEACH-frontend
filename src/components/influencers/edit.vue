@@ -67,7 +67,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="4" md="6" class="py-0">
-                                <v-autocomplete class="mb-0 pb-0" v-model="editedItem.categories" small-chips :items="categories" item-value="id" item-text="name" label="Categoría(s)" multiple chips></v-autocomplete>
+                                <v-autocomplete class="mb-0 pb-0" v-model="editedItem.category_ids" small-chips :items="categories" item-value="id" item-text="name" label="Categoría(s)" multiple chips></v-autocomplete>
                             </v-col>
                         </v-row>
                     <!--/v-stepper-content>
@@ -128,6 +128,9 @@ export default {
         },
     }),
     computed:{
+        categories(){
+            return this.$store.state.category.categories
+        },
         valid(){
             if(this.editedItem.parent_id!=''&&this.editedItem.name!=''){
                 return false

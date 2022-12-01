@@ -7,9 +7,9 @@ const getters = {};
 const actions = {
   getCategories( {commit} ){
     axios
-    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/categories")
+    .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/influencer_categories")
     .then(response => {
-        commit('setCategories', response.data);
+        commit('setCategories', response.data.data);
     });
   }
 };

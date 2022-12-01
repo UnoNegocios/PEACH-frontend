@@ -59,6 +59,23 @@
                 <createRejections @closeDialogRejection="closeDialogRejection"/>
             </v-dialog> 
         </v-card -->
+        <!-- Categories -->
+        <v-card style="background:transparent;" class="elevation-0 py-4 padding2">
+            <v-card-title style="background:white;">Categorías de Influencer
+                <v-tooltip right>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon v-bind="attrs" v-on="on" small class="ml-4">mdi-information-outline</v-icon>
+                    </template>
+                    <span>Right tooltip</span>
+                </v-tooltip>
+                <v-spacer></v-spacer>
+                <v-btn  @click="dialogRejection=true" class="elevation-0" style="height:30px; font-size:13px; font-weight: 400; text-transform:capitalize; color: #1976d1; background-color: rgb(25 118 209 / 10%)!important;" color="primary" dark>Agregar Nuevo</v-btn>
+            </v-card-title>
+            <categories class="px-6"/>
+            <v-dialog v-model="dialogRejection" max-width="350px">
+                <createCategories @closeDialogCategory="closeDialogCategory"/>
+            </v-dialog> 
+        </v-card >
         <!-- Medios de contacto -->
         <v-card style="background:transparent;" class="elevation-0 py-4 padding2">
             <v-card-title style="background:white;">Medios de Contacto
@@ -84,11 +101,13 @@
     import Statuses from "../catalogs/statuses/table"
     import Origins from "../catalogs/origins/table"
     import Rejections from "../catalogs/rejections/table"
+    import Categories from "../catalogs/categories/table"
     
     import createContactMode from "../catalogs/contact_mode/create"
     import createStatus from "../catalogs/statuses/create"
     import createOrigins from "../catalogs/origins/create"
     import createRejections from "../catalogs/rejections/create"
+    import createCategories from "../catalogs/categories/create"
     export default {
         components: {
             //tables
@@ -96,11 +115,13 @@
             'statuses':Statuses,
             'origins':Origins,
             'rejections':Rejections,
+            'categories':Categories,
             //dialogs
             'createContactMode':createContactMode,
             'createStatus':createStatus,
             'createOrigins':createOrigins,
             'createRejections':createRejections,
+            'createCategories':createCategories,
         }, 
         data () {
             return {
@@ -127,6 +148,10 @@
             closeDialogRejection: function(params) {
                 this.dialogRejection = params;
                 this.$store.dispatch('rejection/getRejections')
+            },
+            closeDialogCategory: function(params) {
+                this.dialogRejection = params;
+                this.$store.dispatch('category/getCategories')
             },
         }
     }

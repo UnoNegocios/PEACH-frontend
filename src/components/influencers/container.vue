@@ -47,6 +47,11 @@
                 <template v-slot:[`item.name`]="{ item }">
                     <v-btn class="btnText" :to="{ path: '/influencers/influencer/'+ item.id}">{{item.name}}</v-btn>
                 </template>
+                <template v-slot:[`item.categories`]="{ item }">
+                    <v-chip-group>
+                        <v-chip x-small color="primary" v-for="category in item.categories" :key="category.id">{{category.name}}</v-chip>
+                    </v-chip-group>
+                </template>
                 <template v-slot:[`item.is_booking`]="{ item }">
                     <span v-if="item.is_booking">Booking</span>
                     <span v-else>Mgmt</span>
@@ -273,7 +278,7 @@ export default {
                             bank_account_details:id.bank_account_details,
                             commission_percentage:id.commission_percentage,
                             role:'Influencer',
-                            categories:id.categories//.map(id=>id.id)
+                            category_ids:id.categories.map(id=>id.id)
                         }
                     })[0]
                 }

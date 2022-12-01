@@ -68,7 +68,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="4" md="6" class="py-0">
-                                <v-autocomplete class="mb-0 pb-0" v-model="editedItem.categories" small-chips :items="categories" item-value="id" item-text="name" label="Categoría(s)" multiple chips></v-autocomplete>
+                                <v-autocomplete class="mb-0 pb-0" v-model="editedItem.category_ids" small-chips :items="categories" item-value="id" item-text="name" label="Categoría(s)" multiple chips></v-autocomplete>
                             </v-col>
 
 
@@ -131,7 +131,7 @@ export default {
         //e1: 1,
         disable:'',
         editedItem: {
-            categories:[],
+            category_ids:[],
             parent_id:'',
             name:'',
             last:'',
@@ -169,7 +169,9 @@ export default {
     },
     computed:{
         categories(){
-            return this.$store.state.category.categories
+            var resp = this.$store.state.category.categories
+            console.log(resp)
+            return resp
         },
         valid(){
             if(this.editedItem.name!=''){
@@ -234,7 +236,7 @@ export default {
             this.editedItem.city=''
             this.editedItem.password=''
             this.editedItem.avatar=''
-            this.editedItem.categories=''
+            this.editedItem.category_ids=''
 
             this.editedItem.is_booking=false
 
