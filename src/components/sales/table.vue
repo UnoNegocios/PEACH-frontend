@@ -643,7 +643,7 @@
                         payment_promise_date: id.payment_promise_date,
                         pay_day: id.pay_day,
                         salesman: id.agent.name + ' ' + id.agent.last,
-                        promesa_de_pago: id.payment_promise_date,
+                        promesa_de_pago: this.cualFecha(id.payment_promise_date, id.created_at.slice(0, 10)),
                         campaign:id.campaign,
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,
@@ -688,14 +688,11 @@
             cualFecha(payment_promise_date, created_at){
                 var date = ''
                 if(payment_promise_date!=null){
-                    date = payment_promise_date
+                    date = payment_promise_date + ' ' + '00:00:00'
                 }else{
-                    date = created_at
+                    date = created_at + ' ' + '00:00:00'
                 }
-                console.log(date)
-                console.log(new Date(date).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(0,10))
-                console.log('----')
-                return date
+                return new Date(date)
             },
             promesadepago(date){
                 return this.month(date.toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(5,7)) + ' ' + date.toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(0,4)
