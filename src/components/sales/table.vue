@@ -994,6 +994,10 @@
     .v-menu__content.theme--light.menuable__content__active{
         max-height: 85vh!important;
     }
+
+    .v-data-table>.v-data-table__wrapper>table>thead>tr>th {
+        padding: 0 0px!important;
+    }
 </style>
 
 

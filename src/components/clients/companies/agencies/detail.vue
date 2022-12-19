@@ -62,7 +62,7 @@
                     Marcas
                   </div>
                   <v-list-item v-for="brand in brands" :key="brand.id" class="my-0 py-0">
-                    <v-icon :to="{ path: '/clients/brand/'+ item.id}" small class="mr-4"> mdi-eye</v-icon>{{brand.name}}
+                    <v-icon :to="{ path: '/clients/brand/'+ brand.id}" small class="mr-4"> mdi-eye</v-icon>{{brand.name}}
                   </v-list-item>
                 </v-list>
               </v-card>
@@ -193,22 +193,23 @@ import ActivityLog from "../../../activitylog/container"
       return {
         gris:false,
         show:false,
+        brands:[],
         companyDetail:null
       }
     },
     watch:{
       agency_id:{
         handler(){
-          axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?filter[agencies.id]=' + this.agency_id)// + filter2
+          axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brands?filter[agencies.id]=' + this.agency_id)// + filter2
           .then(res => {
-              this.brands = response.data.data
+              this.brands = res.data.data
           })
         },deep: true
       }
     },
     created(){
-      axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?filter[agencies.id]=' + this.agency_id).then(res => {
-          this.brands = response.data.data
+      axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brands?filter[agencies.id]=' + this.agency_id).then(res => {
+          this.brands = res.data.data
       })
       this.$emit("closeDrawer", false);
     },

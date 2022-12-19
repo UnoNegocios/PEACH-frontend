@@ -252,10 +252,10 @@ import axios from "axios";
                 this.isLoadingBrand = true
                 var filter = ''
                 if(this.quotation.agency_id!=null){
-                    filter = '?filter[agencies.id]=' + this.quotation.agency_id + '&'
+                    filter = 'filter[agencies.id]=' + this.quotation.agency_id + '&'
                 }
                 //var filter2 = this.$store.state.currentUser.client_filter
-                axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?' + filter + "filter[name]=" + val)// + filter2
+                axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brands?' + filter + "filter[name]=" + val)// + filter2
                 .then(res => {
                     if(this.entriesBrands.length>0){
                         this.entriesBrands.concat(res.data.data)
