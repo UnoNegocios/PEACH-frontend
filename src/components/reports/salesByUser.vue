@@ -5,7 +5,7 @@
             <v-spacer/>
             <v-menu offset-y :close-on-content-click="closeDatePicker(date_filter)">
                 <template v-slot:activator="{ on, attrs }">
-                    <v-text-field style="max-width:280px;" class="mt-5" outlined dense clearable v-model="date_filter" label="Fecha Promesa" prepend-icon="mdi-calendar" v-bind="attrs" readonly v-on="on"></v-text-field>
+                    <v-text-field style="max-width:280px;" class="mt-5" outlined dense clearable v-model="date_filter" label="Fecha de Cierre" prepend-icon="mdi-calendar" v-bind="attrs" readonly v-on="on"></v-text-field>
                 </template>
                 <v-date-picker v-model="date_filter" range></v-date-picker>
             </v-menu>
