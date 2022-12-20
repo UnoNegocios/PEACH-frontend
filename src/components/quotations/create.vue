@@ -151,7 +151,7 @@ import axios from "axios";
             datePicker:false,
             datePicker2:false,
             dropzoneOptions: {
-                url: process.env.VUE_APP_BACKEND_ROUTE + "api/v1/quotation/files/"+'hola',
+                url: process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sale/file",
                 addRemoveLinks: true,
                 maxFiles: 1
             },
@@ -173,7 +173,8 @@ import axios from "axios";
                 total:'',
                 influencer_amount:null,
                 campaign:'',
-                payment_promise_date:''
+                payment_promise_date:'',
+                deadline_date:''
             },
             rules: {
                 required: value => !!value || 'Campo requerido',
@@ -369,6 +370,7 @@ import axios from "axios";
                 })
             },
             save(){
+                this.quotation.deadline_date = this.quotation.payment_promise_date
                 this.gris2 = true
                 this.quotation.created_by_user_id = this.currentUser.id
                 this.quotation.last_updated_by_user_id = this.currentUser.id

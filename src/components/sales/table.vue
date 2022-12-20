@@ -46,6 +46,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
             </template>
             <template v-slot:top>
                 <v-toolbar flat class="mb-2">
@@ -160,13 +162,19 @@
                             </v-icon>
                             Fecha Promesa
                         </v-list-item>
+                        <v-list-item @click="deadlineDate(item.editedItem)" v-show="permissions('editDeadlineDate')">
+                            <v-icon small class="mr-2">
+                                mdi-calendar
+                            </v-icon>
+                            Fecha Cierre
+                        </v-list-item>
                         <v-list-item @click="liquidar(item.editedItem)">
                             <v-icon small class="mr-2">
                                 mdi-cash-check
                             </v-icon>
                             Venta Pagada
                         </v-list-item>
-                        <v-list-item @click="cancellItem(item.id)">
+                        <v-list-item v-show="permissions('cancelSales')" @click="cancellItem(item.id)">
                             <v-icon small class="mr-2">
                                 mdi-close
                             </v-icon>
@@ -182,6 +190,11 @@
             <!-- Actualización -->
             <template v-slot:[`item.updated_at`]="{ item }">
                 {{item.updated_at.slice(0, 10)}}
+            </template>
+            <template v-slot:[`item.pdf`]="{ item }">
+                <v-btn v-if="item.pdf!=undefined" v-bind:href="'https://unopack.mx/files/' + item.pdf" target="_blank" icon>
+                    <v-icon small>mdi-file-pdf</v-icon>
+                </v-btn>
             </template>
             <!-- Tabla sin información -->
             <template v-slot:no-data>
@@ -302,6 +315,26 @@
                 </v-btn>
             </div>
         </v-dialog>
+        <!-- Fecha Corte -->
+        <v-dialog v-model="deadlineDateDialog" max-width="400px">
+            <div class="px-12 py-6" style="background-color:white;">
+                Fecha Cierre: 
+                <v-menu v-model="datePicker2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px" >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field class="pb-6 mt-4" :rules="[v => !!v || 'Campo requerido']" clearable required v-model="quotation.deadline_date" label="Fecha" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                    </template>
+                    <v-date-picker color="primary" v-model="quotation.deadline_date" @input="datePicker2 = false"></v-date-picker>
+                </v-menu>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="deadlineDateDialog=false">
+                    Cancelar
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="saveDeadlineDate()">
+                    Guardar
+                </v-btn>
+            </div>
+        </v-dialog>
+        
         <!-- Venta Pagada -->
         <v-dialog v-model="liquidarDialog" max-width="400px">
             <div class="px-12 py-6" style="background-color:white;">
@@ -382,6 +415,7 @@
             datePicker3:false,
             influencerPaymentDialg:false,
             promiseDateDialog:false,
+            deadlineDateDialog:false,
             statusss:'vendido',
             statusData:'',
             statusId:'',
@@ -473,8 +507,12 @@
                 //{ text: 'Factura Influencer', value: 'influencer_invoice' },
                 { text: 'Fecha Pago Influencer', value: 'influencer_payment_date' },
                 { text: 'Factura', value: 'invoice' },
+                { text: 'Contrato', value: 'pdf' },
                 { text: 'Fecha Factura', value: 'invoice_date' },
                 { text: 'Promesa de Pago', value: 'payment_promise_date', sortable: false },
+
+                { text: 'Fecha Cierre', value: 'deadline_date' },
+
                 { text: 'Fecha de Pago', value: 'pay_day' },
                 { text: 'Responsable', value: 'salesman' },
                 { value: 'actions', sortable: false, align: 'end', },
@@ -618,7 +656,6 @@
                 }
             },
             mapQuotations(quotations){
-                console.log(quotations.map(id=>id.payment_promise_date))
                 quotations =  quotations.map(id=>{
                     return{
                         editedItem: id,
@@ -648,7 +685,9 @@
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,
                         peach_amount:id.peach_amount,
-                        influencer_amount:id.influencer_amount
+                        influencer_amount:id.influencer_amount,
+                        deadline_date:id.deadline_date,
+                        pdf:id.pdf
                     }
                 }).sort((a, b) => {
                     return a.promesa_de_pago - b.promesa_de_pago;
@@ -675,12 +714,14 @@
                         pay_day: id.pay_day,
                         salesman: id.salesman,
                         editedItem: id.editedItem,
-                        month: this.promesadepago(id.promesa_de_pago),
+                        month: this.promesadepago(id.deadline_date),
                         campaign:id.campaign,
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,
                         peach_amount:id.peach_amount,
-                        influencer_amount:id.influencer_amount
+                        influencer_amount:id.influencer_amount,
+                        pdf:id.pdf,
+                        deadline_date:id.deadline_date
                     }
                 })
                 return quotations
@@ -747,6 +788,10 @@
                 this.quotation = item
                 this.promiseDateDialog = true
             },
+            deadlineDate(item){
+                this.quotation = item
+                this.deadlineDateDialog = true
+            },
             liquidar(item){
                 this.quotation = item
                 this.liquidarDialog = true
@@ -759,6 +804,16 @@
                 }
                 axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales/" + editedItem.id, editedItem).then(response=>{
                     this.influencerPaymentDialg = false
+                    this.getDataFromApi()
+                })
+            },
+            saveDeadlineDate(){
+                var editedItem = {
+                    id:this.quotation.id,
+                    deadline_date:this.quotation.deadline_date
+                }
+                axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales/" + editedItem.id, editedItem).then(response=>{
+                    this.deadlineDateDialog = false
                     this.getDataFromApi()
                 })
             },
@@ -903,7 +958,7 @@
                     id:sale_id,
                     sale_status: 'cancelado'
                 }
-                axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales" + sale_id, editedItem).then(response => {
+                axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sales/" + sale_id, editedItem).then(response => {
                     this.getDataFromApi()
                 });
             },
@@ -948,7 +1003,8 @@
                         influencer_amount:id.influencer_amount,
                         campaign:id.campaign,
                         invoice_date:id.invoice_date,
-                        payment_promise_date:id.payment_promise_date
+                        payment_promise_date:id.payment_promise_date,
+                        deadline_date:id.deadline_date
                     }
                 })[0]
                 this.editDialog = true

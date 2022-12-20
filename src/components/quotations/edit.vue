@@ -140,7 +140,7 @@ const initialState = () => {
         datePicker:'',
         datePicker2:false,
         dropzoneOptions: {
-            url: process.env.VUE_APP_BACKEND_ROUTE + "api/v1/quotation/files",
+            url: process.env.VUE_APP_BACKEND_ROUTE + "api/v1/sale/file",
             addRemoveLinks: true,
             maxFiles: 1
         },
@@ -183,7 +183,7 @@ import axios from "axios";
                 invoice:this.editedQuotation.invoice,
                 created_by_user_id:this.editedQuotation.created_by_user_id,
                 last_updated_by_user_id:this.editedQuotation.last_updated_by_user_id,
-                influencer_id:this.editedQuotation.influencer_id,
+                influencer_id:this.editedQuotation.influencer_id*1,
                 service_date:this.editedQuotation.service_date,
                 service:this.editedQuotation.service,
                 total:this.editedQuotation.total*1,
@@ -191,7 +191,15 @@ import axios from "axios";
                 campaign:this.editedQuotation.campaign,
                 invoice_date:this.editedQuotation.invoice_date,
                 payment_promise_date:this.editedQuotation.payment_promise_date,
-
+            }
+            if(this.editedQuotation.influencer!=undefined){
+                this.entriesInfluencers = [this.editedQuotation.influencer]
+            }
+            if(this.editedQuotation.agency!=undefined){
+                this.entriesAgencies = [this.editedQuotation.agency]
+            }
+            if(this.editedQuotation.brand!=undefined){
+                this.entriesBrands = [this.editedQuotation.brand]
             }
         },
         components: {
@@ -225,6 +233,7 @@ import axios from "axios";
             },
             editedQuotation:{
                 handler(){
+                    console.log('perro')
                     this.quotation = {
                         brand_id:this.editedQuotation.brand_id,
                         agency_id:this.editedQuotation.agency_id,
@@ -236,7 +245,7 @@ import axios from "axios";
                         invoice:this.editedQuotation.invoice,
                         created_by_user_id:this.editedQuotation.created_by_user_id,
                         last_updated_by_user_id:this.editedQuotation.last_updated_by_user_id,
-                        influencer_id:this.editedQuotation.influencer_id,
+                        influencer_id:this.editedQuotation.influencer_id*1,
                         service_date:this.editedQuotation.service_date,
                         service:this.editedQuotation.service,
                         total:this.editedQuotation.total*1,
@@ -268,11 +277,7 @@ import axios from "axios";
                     this.isLoadingInfluencers = true
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/influencer/search?filter[social_networks]='+val+link)
                     .then(res => {
-                        if(this.entriesInfluencers.length>0){
-                            this.entriesInfluencers.concat(res.data.data)
-                        }else{
-                            this.entriesInfluencers = res.data.data
-                        }
+                        this.entriesInfluencers = res.data.data
                     }).finally(() => (this.isLoadingInfluencers = false))
                 }   
             },
@@ -282,12 +287,7 @@ import axios from "axios";
                 //var filter = this.$store.state.currentUser.client_filter
                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/agency/search?filter[name]='+val)//+filter)
                 .then(res => {
-                    console.log(this.entriesAgencies)
-                    if(this.entriesAgencies.length>0){
-                        this.entriesAgencies.concat(res.data.data)
-                    }else{
-                        this.entriesAgencies = res.data.data
-                    }
+                    this.entriesAgencies = res.data.data    
                 }).finally(() => (this.isLoadingAgencies = false))
             },
             searchBrands(val){
@@ -295,22 +295,18 @@ import axios from "axios";
                 this.isLoadingBrand = true
                 var filter = ''
                 if(this.quotation.agency_id!=null){
-                    filter = '?filter[agencies.id]=' + this.quotation.agency_id + '&'
+                    filter = 'filter[agencies.id]=' + this.quotation.agency_id + '&'
                 }
                 //var filter2 = this.$store.state.currentUser.client_filter
-                axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brand/search?' + filter + "filter[name]=" + val)// + filter2
+                axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/brands/?' + filter + "filter[name]=" + val)// + filter2
                 .then(res => {
-                    if(this.entriesBrands.length>0){
-                        this.entriesBrands.concat(res.data.data)
-                    }else{
-                        this.entriesBrands = res.data.data
-                    }
+                    this.entriesBrands = res.data.data
                 }).finally(() => (this.isLoadingBrand = false))
             },
         },
         computed: {
             influencer(){
-                return this.quotation.influencer_id
+                return this.quotation.influencer_id*1
             },
             total(){
                 return this.quotation.total

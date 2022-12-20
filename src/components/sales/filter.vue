@@ -29,6 +29,14 @@
 
             <v-text-field label="Servicio" v-model="quotation.service"></v-text-field>
 
+            <v-select label="Contrato Adjunto" v-model="quotation.has_file" item-value="value" item-text="text" :items="siyno"></v-select>
+
+            <v-menu offset-y :close-on-content-click="closeDatePicker(quotation.deadline_date)">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-text-field clearable v-model="quotation.deadline_date" label="Fecha Cierre" prepend-icon="mdi-calendar" v-bind="attrs" readonly v-on="on"></v-text-field>
+                </template>
+                <v-date-picker v-model="quotation.deadline_date" range></v-date-picker>
+            </v-menu>
             <v-menu offset-y :close-on-content-click="closeDatePicker(quotation.promise_date)">
                 <template v-slot:activator="{ on, attrs }">
                     <v-text-field clearable v-model="quotation.promise_date" label="Fecha Promesa" prepend-icon="mdi-calendar" v-bind="attrs" readonly v-on="on"></v-text-field>
@@ -72,6 +80,7 @@ import axios from "axios"
 export default {
     data: () => ({
         areas:[{text:'Mgmt', value:false}, {text:'Booking', value:true}],
+        siyno:[{text:'Si', value:true}, {text:'No', value:false}],
         colors:['Verde', 'Amarillo', 'Celeste'],
         quotation:{
             id:'',
@@ -85,8 +94,10 @@ export default {
             invoice:'',
             invoice_date:[],
             promise_date:[],
+            deadline_date:[],
             pay_date:[],
-            user_id:''
+            user_id:'',
+            has_file:''
         },
         entries:{agencies:[], brands:[], influencers:[]},
         isLoadingAgencies: false,
@@ -215,7 +226,9 @@ export default {
                 promise_date:[],
                 pay_date:[],
                 user_id:'',
-                color:''
+                color:'',
+                deadline_date:[],
+                has_file:''
             }
             this.$nextTick(() => {
                 this.$emit("filtersQuotation", this.quotation);
@@ -303,11 +316,19 @@ export default {
                 count = count+1
                 filter = filter + '&filter[influencer.is_booking]='+this.quotation.area
             }
+            if(this.quotation.has_file!=''){
+                count = count+1
+                filter = filter + '&filter[influencer.has_file]='+this.quotation.has_file
+            }
             if(this.quotation.color!==''){
                 count = count+1
                 filter = filter + '&filter[color]='+this.quotation.color
             }
             //date
+            if(this.quotation.deadline_date.length==2){
+                count = count+1
+                filter = filter + '&filter[deadline_date_between]=' + this.quotation.deadline_date[0] + ',' + this.quotation.deadline_date[1]
+            }
             if(this.quotation.influencer_payment_date.length==2){
                 count = count+1
                 filter = filter + '&filter[influencer_payment_date_between]=' + this.quotation.influencer_payment_date[0] + ',' + this.quotation.influencer_payment_date[1]
