@@ -85,7 +85,7 @@ export default {
         promise_date_between[0] = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
         promise_date_between[1] = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
         axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=sales').then(server_resp=>{
-            var response = server_resp.data.sort(function(a,b){
+            var response = server_resp.data.filter(r=>r.month!=null).sort(function(a,b){
                 return (a.month*1) - (b.month*1)
             })
             this.series = [{
@@ -111,7 +111,7 @@ export default {
     methods:{
         month(number){
             var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            return meses[(number*1)-1]
+            return meses[(number.slice(4,6)*1)-1] + ' ' + number.slice(0,4)
         }
     }
 }
