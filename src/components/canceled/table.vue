@@ -7,7 +7,7 @@
         </v-navigation-drawer>
         <!-- Contenedor show-expand -->
         <v-data-table 
-        :item-class="itemRowBackground" 
+        
         :headers="showHeaders" 
         :items="quotations" 
         class="elevation-0 px-6 py-4"
@@ -64,7 +64,7 @@
                         </v-badge>
                     </v-btn>
 
-                    <v-select style="max-width:300px!important;" class="ml-4 mt-6" v-model="selectedStatus" :items="statuses" label="Status de Venta" item-text="text" item-value="value" dense chips outlined small-chips></v-select>
+                    <!--v-select style="max-width:300px!important;" class="ml-4 mt-6" v-model="selectedStatus" :items="statuses" label="Status de Venta" item-text="text" item-value="value" dense chips outlined small-chips></v-select-->
 
                     <v-spacer></v-spacer>
                     <v-select style="max-width:350px!important;" class="mr-4 mt-6" v-model="selectedHeaders" :items="headers" label="Columnas" dense multiple outlined return-object>
@@ -94,7 +94,7 @@
                         <v-icon @click="exportExcel">mdi-download</v-icon>
                     </v-btn>
                 </v-toolbar>
-                <v-row class="ma-0 pb-4 pt-2">
+                <!--v-row class="ma-0 pb-4 pt-2">
                     <v-icon color="#0080002b" class="mr-1">mdi-label</v-icon> 
                     <span style="font-size:12px; line-height:24px!important;">Ya se cobro al Cliente y se pago a Influencer</span>
                     <v-spacer/>
@@ -104,7 +104,7 @@
                     <v-icon color="#d9ebff" class="mr-1">mdi-label</v-icon> 
                     <span style="font-size:12px; line-height:24px!important;">No se ha cobrado al Cliente y ya se pago a Influencer</span>
                     <v-spacer/>
-                </v-row>
+                </v-row-->
             </template>
             <template v-slot:[`item.subtotal`]="{ item }">
                 {{(item.subtotal*1).toLocaleString('es-MX', { style: 'currency', minimumFractionDigits: 0, currency: 'MXN',})}}
@@ -287,7 +287,7 @@
             ],
             headers:[],
             selectedHeaders: [],
-            selectedStatus: 'pending_sales',
+            selectedStatus: 'all',//pending_sales
             statuses:[
                 {text:'Todo', value:'all'},
                 {text:'Ventas Pendientes', value:'pending_sales'},
