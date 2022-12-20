@@ -138,7 +138,7 @@ export default {
             handler(){
                 if(this.date_filter!=null && this.date_filter.length==2){
                     this.showReport = false
-                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=influencers&include=influencer&filter[promise_date_between]='+this.date_filter).then(response=>{
+                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=influencers&include=influencer&filter[deadline_date_between]='+this.date_filter).then(response=>{
                         var reports = response.data.sort(function(a,b){
                             return ((b.peach_amount*1) + (b.influencer_amount*1)) - ((a.peach_amount*1) + (a.influencer_amount*1))
                         }).filter(influencer=>influencer!=undefined)

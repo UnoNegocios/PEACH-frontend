@@ -98,7 +98,7 @@ export default {
             handler(){
                 if(this.date_filter!=null && this.date_filter.length==2){
                     this.showReport = false
-                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=departments&filter[promise_date_between]='+this.date_filter).then(response=>{
+                    axios.get(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/reports?subject=departments&filter[deadline_date_between]='+this.date_filter).then(response=>{
                         this.series = [(response.data.management.influencer_amount+response.data.management.peach_amount),(response.data.booking.influencer_amount+response.data.booking.peach_amount)]
                         this.cards = [
                             response.data.management,
