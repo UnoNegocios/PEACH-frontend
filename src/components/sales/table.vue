@@ -156,13 +156,13 @@
                             </v-icon>
                             Pagar a Influencer
                         </v-list-item>
-                        <v-list-item @click="promiseDate(item.editedItem)">
+                        <v-list-item @click="promiseDate(item.editedItem)" v-show="permissions('editPromiseDate')">
                             <v-icon small class="mr-2">
                                 mdi-calendar
                             </v-icon>
                             Fecha Promesa
                         </v-list-item>
-                        <v-list-item @click="deadlineDate(item.editedItem)" v-show="permissions('editDeadlineDate')">
+                        <v-list-item @click="deadlineDate(item.editedItem)">
                             <v-icon small class="mr-2">
                                 mdi-calendar
                             </v-icon>
