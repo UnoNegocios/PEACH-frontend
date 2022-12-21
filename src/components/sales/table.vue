@@ -156,13 +156,13 @@
                             </v-icon>
                             Pagar a Influencer
                         </v-list-item>
-                        <v-list-item @click="promiseDate(item.editedItem)" v-show="permissions('editPromiseDate')">
+                        <v-list-item @click="promiseDate(item.editedItem)">
                             <v-icon small class="mr-2">
                                 mdi-calendar
                             </v-icon>
                             Fecha Promesa
                         </v-list-item>
-                        <v-list-item @click="deadlineDate(item.editedItem)">
+                        <v-list-item @click="deadlineDate(item.editedItem)" v-show="permissions('editDeadlineDate')">
                             <v-icon small class="mr-2">
                                 mdi-calendar
                             </v-icon>
@@ -680,7 +680,7 @@
                         payment_promise_date: id.payment_promise_date,
                         pay_day: id.pay_day,
                         salesman: id.agent.name + ' ' + id.agent.last,
-                        promesa_de_pago: this.cualFecha(id.payment_promise_date, id.created_at.slice(0, 10)),
+                        promesa_de_pago: this.cualFecha(id.deadline_date, id.created_at.slice(0, 10)),
                         campaign:id.campaign,
                         influencer_percentage:id.influencer_percentage,
                         peach_percentage:id.peach_percentage,
@@ -736,7 +736,7 @@
                 return new Date(date)
             },
             promesadepago(date){
-                return this.month(date.toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(5,7)) + ' ' + date.toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(0,4)
+                return this.month(date.slice(5,7)) + ' ' + date.slice(0,4)
             },
             sortTheHeadersAndUpdateTheKey(evt) {
                 const headersTmp = this.showHeaders;
@@ -1055,5 +1055,3 @@
         padding: 0 0px!important;
     }
 </style>
-
-
