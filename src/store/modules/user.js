@@ -22,15 +22,9 @@ const actions = {
         });
     },
     getInfluencer( {commit} ){
-        axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/user/current").then(response => {
-            var link = ''
-            if(response.data.data.role == 'Talent Agent' || response.data.data.role == 'Booking'){
-                link = '&filter[parent_id]=' + response.data.data.id
-            }
-            axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/influencers?filter[roles.name]=Influencer"+link)
-            .then(response => {
-                commit('setInfluencer', response.data.data);
-            });
+        axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/influencers?filter[is_booking]=0&itemsPerPage=100")
+        .then(response => {
+            commit('setInfluencer', response.data.data);
         });
     }
 };

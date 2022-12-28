@@ -22,7 +22,7 @@
             </v-card-title>
             <v-data-table expand-icon :headers="headers" :items="users" class="elevation-0">
                 <template slot="no-data">
-                    No existen procedencias registradas.
+                    No existen usuarios registrados.
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-icon small class="mr-2" @click="edit(item)">mdi-pencil</v-icon>

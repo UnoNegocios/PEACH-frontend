@@ -27,6 +27,13 @@
             </v-icon>
             Usuarios
         </v-tab>
+        <!-- Influencers -->
+        <v-tab style="justify-content:left!important;" class="my-2 pr-10">
+            <v-icon left>
+              mdi-account-group
+            </v-icon>
+            Influencers
+        </v-tab>
 
         <!-- Mi Cuenta -->
         <v-tab-item style="background-color: transparent !important; max-height:calc(100vh - 64px); -overflow-scrolling:touch!important; -webkit-overflow-scrolling:touch!important; overflow-y:scroll!important;">
@@ -44,6 +51,12 @@
         <v-tab-item v-show="permissions('users')" style="background-color: transparent !important; max-height:calc(100vh - 64px); -overflow-scrolling:touch!important; -webkit-overflow-scrolling:touch!important; overflow-y:scroll!important;">
           <v-card flat style="background-color: transparent !important;">
             <users/>
+          </v-card>
+        </v-tab-item>
+        <!-- Influencers -->
+        <v-tab-item style="background-color: transparent !important; max-height:calc(100vh - 64px); -overflow-scrolling:touch!important; -webkit-overflow-scrolling:touch!important; overflow-y:scroll!important;">
+          <v-card flat style="background-color: transparent !important;">
+            <influencers/>
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -71,6 +84,13 @@
             </v-icon>
             Usuarios
         </v-tab>
+        <!-- Influencers -->
+        <v-tab style="justify-content:left!important;" class="my-2 pr-10">
+            <v-icon left>
+              mdi-account-multiple
+            </v-icon>
+            Influencers
+        </v-tab>
 
         <!-- Mi Cuenta -->
         <v-tab-item style="background-color: transparent !important; max-height:calc(100vh - 64px); -overflow-scrolling:touch!important; -webkit-overflow-scrolling:touch!important; overflow-y:scroll!important;">
@@ -90,6 +110,12 @@
             <users/>
           </v-card>
         </v-tab-item>
+         <!-- Influencers -->
+        <v-tab-item style="background-color: transparent !important; max-height:calc(100vh - 64px); -overflow-scrolling:touch!important; -webkit-overflow-scrolling:touch!important; overflow-y:scroll!important;">
+          <v-card flat style="background-color: transparent !important;">
+            <influencers/>
+          </v-card>
+        </v-tab-item>
 
       </v-tabs>
     </v-card>
@@ -101,11 +127,13 @@
     import Catalogs from "../settings/catalogs/container"
     import Account from "../settings/account/container"
     import Users from "../settings/users/container"
+    import Influencers from "../settings/influencers/container"
     export default {
         components: {
             'catalogs':Catalogs,
             'account':Account,
             'users':Users,
+            'influencers':Influencers
         },
         computed:{
           currentUserMail:{
