@@ -25,12 +25,12 @@
                     <v-col class="pt-0" cols="12" sm="6" md="9">
                         <v-row>
                             <v-col cols="12" sm="6" md="6">
-                                <v-autocomplete v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
+                                <v-autocomplete :rules="[v => !!v || 'Campo requerido']" required v-model="quotation.agency_id" :items="agencyLists" :loading="isLoadingAgencies" :search-input.sync="searchAgencies" hide-no-data item-value="id" item-text="name" label="Agencia(s)" placeholder="Escribe para buscar">
                                     <template slot="no-data"><div class="px-4 py-1">No existen agencias relacionadas.</div></template>  
                                 </v-autocomplete>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-autocomplete v-model="quotation.brand_id" :items="brandLists" :loading="isLoadingBrands" :search-input.sync="searchBrands" hide-no-data item-value="id" item-text="name" label="Marca(s)" placeholder="Escribe para buscar">
+                                <v-autocomplete :rules="[v => !!v || 'Campo requerido']" required v-model="quotation.brand_id" :items="brandLists" :loading="isLoadingBrands" :search-input.sync="searchBrands" hide-no-data item-value="id" item-text="name" label="Marca(s)" placeholder="Escribe para buscar">
                                     <template slot="no-data"><div class="px-4 py-1">No existen marcas relacionadas.</div></template>  
                                 </v-autocomplete>
                             </v-col>
@@ -44,7 +44,7 @@
                 </v-row>  
                 <v-row style="background-color: #94949417;" class="px-8 ma-0 pb-3 pt-0 mb-0">
                     <v-col cols="12" sm ="4" md="4" class="pl-0">
-                        <v-autocomplete v-model="quotation.influencer_id" :items="influencerLists" :loading="isLoadingInfluencers" :search-input.sync="searchInfluencers" hide-no-data item-value="id" item-text="name" label="Influencer(s)" placeholder="Escribe para buscar">
+                        <v-autocomplete :rules="[v => !!v || 'Campo requerido']" required v-model="quotation.influencer_id" :items="influencerLists" :loading="isLoadingInfluencers" :search-input.sync="searchInfluencers" hide-no-data item-value="id" item-text="name" label="Influencer(s)" placeholder="Escribe para buscar">
                             <template slot="no-data"><div class="px-4 py-1">No existen influencers relacionadas.</div></template>  
                         </v-autocomplete>
                     </v-col>
@@ -193,9 +193,7 @@ import axios from "axios";
         watch: {
             influencer:{
                 handler: function (val, oldVal) {
-                    console.log((val*1)!=(oldVal*1))
                     if((val*1)!=(oldVal*1)){
-                        console.log('paso')
                         var commission_percentage = this.entriesInfluencers.filter(influencer=>influencer.id == this.influencer).map(influencer=>influencer.commission_percentage)[0]*1
                         this.quotation.influencer_amount = (((this.quotation.total/1.16)/100)*commission_percentage).toFixed(2)
                     }
@@ -274,7 +272,7 @@ import axios from "axios";
                 return this.quotation.total
             },
             gris(){
-                if(this.quotation.influencer_id==''||(this.quotation.brand_id==null&&this.quotation.agency_id==null)||this.quotation.payment_promise_date==''){
+                if(this.vacio(this.quotation.influencer_id)||this.vacio(this.quotation.brand_id)||this.vacio(this.quotation.agency_id)||this.vacio(this.quotation.payment_promise_date)){
                     return true
                 }else{
                     return false
@@ -330,6 +328,11 @@ import axios from "axios";
             }
         },
         methods: {
+            vacio(value){
+                if(value==''||value==null||value==undefined){
+                    return true
+                }
+            },
             isBooking(){
                 return this.influencerLists.filter(influencer=>influencer.id == this.quotation.influencer_id).map(influencer=>influencer.is_booking)[0]
             },

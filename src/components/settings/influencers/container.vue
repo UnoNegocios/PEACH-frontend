@@ -10,7 +10,7 @@
             </v-card-text>
         </v-card> 
         <v-card style="background:transparent;" class="elevation-0 pb-4 padding2">
-            <v-card-title style="background:white;">Influencers
+            <v-card-title style="background:white;" class="px-6">Influencers
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
                         <v-icon v-bind="attrs" v-on="on" small class="ml-4">mdi-information-outline</v-icon>
@@ -21,7 +21,7 @@
                 <v-text-field class="pt-0 pb-2" v-model="search2" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
                 <v-select label="Status" clearable class="ml-6" style="max-width:150px;" :items="status" v-model="search" item-text="label" item-value="value"></v-select>
             </v-card-title>
-            <v-data-table :search="search" expand-icon :headers="headers" :items="users" class="elevation-0">
+            <v-data-table :search="search" expand-icon :headers="headers" :items="users" class="elevation-0 px-8">
                 <template slot="no-data">
                     No existen influencers registrados.
                 </template>
