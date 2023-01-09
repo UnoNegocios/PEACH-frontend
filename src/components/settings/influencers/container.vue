@@ -92,7 +92,7 @@ export default {
                     id:id.id,
                     name:id.name,
                     instagram:id.social_networks.instagram,
-                    is_active:this.isActive(id.is_active),
+                    is_active:this.isActive(id.status),
                     email:id.email,
                 }})
             }
@@ -101,11 +101,13 @@ export default {
     methods:{
         sendNotification(influencer_id){
             axios.post(process.env.VUE_APP_BACKEND_ROUTE + 'api/v1/influencer/send_app_invite/'+influencer_id).then(resp=>{
+                this.$store.dispatch('user/getInfluencer') 
                 this.snackbar = {
                     color:'success',
                     show:true,
                     message:'Invitación enviada con éxito',
                 }
+
             }).catch(error=>{
                 this.snackbar = {
                     color:'error',
