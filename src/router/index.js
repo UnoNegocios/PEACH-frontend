@@ -15,6 +15,11 @@ const routes = [
     component: () => import('../components/contracts/table.vue')
   },
   {
+    path: '/expenses',
+    name: 'Gastos',
+    component: () => import('../components/expenses/table.vue')
+  },
+  {
     path: '/influencers-payments',
     name: 'Influencers Payments',
     component: () => import('../components/influencers_payments/table.vue')

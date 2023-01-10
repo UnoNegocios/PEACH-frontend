@@ -172,6 +172,24 @@
           <span>Cotizaciones que no se cerraron por algun motivo</span>
         </v-tooltip>
         </div>
+
+        <!-- Gastos -->
+        <div v-show="permissions('expenses')">
+          <v-divider class="ma-4"></v-divider>
+          <v-tooltip right open-delay="1000">
+            <template v-slot:activator="{ on, attrs }">
+              <v-list-item to="/expenses" link v-bind="attrs" v-on="on">
+                <v-list-item-action class="mr-3">
+                  <v-icon>mdi-currency-usd-off</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Gastos</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              </template>
+            <span>Lista de gastos</span>
+          </v-tooltip>
+        </div>
       </v-list>
       <template v-slot:append>
         <div style="color:#9ca3a5; font-size: 12px;" class="pa-2">
